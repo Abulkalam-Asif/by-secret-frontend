@@ -85,8 +85,8 @@ const AdminUser = () => {
 
   return (
     <>
-      <section className="bg-gray-50">
-        <div className="bg-white rounded-xl shadow-lg p-8">
+      <section>
+        <div className="max-w-[450px] w-full mx-auto bg-white rounded-xl shadow-lg p-8">
           <div className="mb-8 text-theme-gray">
             <h1 className="text-2xl font-bold text-theme-gray">Create User</h1>
             <p className="text-sm text-gray-500 mt-2">

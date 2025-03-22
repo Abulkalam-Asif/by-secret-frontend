@@ -71,7 +71,7 @@ export default function AdminWiki() {
   };
 
   return (
-    <section className="bg-gray-50">
+    <section >
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-theme-gray">Wiki</h1>
