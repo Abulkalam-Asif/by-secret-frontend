@@ -4,6 +4,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import AdminWiki from "./routes/admin/AdminWiki";
 import AdminHome from "./routes/admin/AdminHome";
 import Home from "./routes/Home";
+import AdminUser from "./routes/admin/AdminUser";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<AdminHome />} />
           <Route path="wiki" element={<AdminWiki />} />
+          <Route path="user" element={<AdminUser />} />
         </Route>
       </Routes>
     </>

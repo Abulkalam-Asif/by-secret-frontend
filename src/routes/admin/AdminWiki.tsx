@@ -71,7 +71,7 @@ export default function AdminWiki() {
   };
 
   return (
-    <div className="bg-gray-50">
+    <section className="bg-gray-50">
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-theme-gray">Wiki</h1>
@@ -133,10 +133,10 @@ export default function AdminWiki() {
           </ClientOnly>
         )}
 
-        <div className="flex justify-end mt-8">
+        <div className="mt-8">
           <Button onClick={saveHandler} text="Save Wiki" />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

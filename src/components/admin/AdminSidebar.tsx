@@ -6,6 +6,7 @@ import {
   FiFileText,
   FiChevronRight,
   FiChevronLeft,
+  FiUsers,
 } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
 
@@ -24,6 +25,7 @@ const AdminSidebar = ({
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: <FiHome size={16} /> },
     { name: "Wiki", href: "/admin/wiki", icon: <FiFileText size={16} /> },
+    { name: "Users", href: "/admin/user", icon: <FiUsers size={16} /> },
   ];
 
   const logoutHandler = () => {

@@ -22,21 +22,19 @@ const InputBox = ({
   className = "",
 }: InputBoxProps) => {
   return (
-    <div>
-      <input
-        type={type}
-        name={name}
-        id={idHtmlFor}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        required={required}
-        disabled={disabled}
-        className={`w-full px-4 py-3 border text-sm border-[#e5e7eb] text-theme-gray rounded focus:outline-none focus:border-theme-blue ${
-          disabled ? "bg-gray-100 cursor-not-allowed" : ""
-        } ${className}`}
-      />
-    </div>
+    <input
+      type={type}
+      name={name}
+      id={idHtmlFor}
+      value={value}
+      placeholder={placeholder}
+      onChange={onChange}
+      required={required}
+      disabled={disabled}
+      className={`w-full px-4 py-3 border text-sm border-[#e5e7eb] text-theme-gray rounded focus:outline-none focus:border-theme-blue ${
+        disabled ? "bg-gray-100 cursor-not-allowed" : ""
+      } ${className}`}
+    />
   );
 };
 
