@@ -6,6 +6,7 @@ import AdminHome from "./routes/admin/AdminHome";
 import Home from "./routes/Home";
 import AdminUser from "./routes/admin/AdminUser";
 import AdminAdsSetting from "./routes/admin/AdminAdsSetting";
+import AdminRouletteSetting from "./routes/admin/AdminRouletteSetting";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="wiki" element={<AdminWiki />} />
           <Route path="user" element={<AdminUser />} />
           <Route path="ads-setting" element={<AdminAdsSetting />} />
+          <Route path="roulette-setting" element={<AdminRouletteSetting />} />
         </Route>
       </Routes>
     </>
