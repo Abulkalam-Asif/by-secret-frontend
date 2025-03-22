@@ -5,6 +5,7 @@ import AdminWiki from "./routes/admin/AdminWiki";
 import AdminHome from "./routes/admin/AdminHome";
 import Home from "./routes/Home";
 import AdminUser from "./routes/admin/AdminUser";
+import AdminAdsSetting from "./routes/admin/AdminAdsSetting";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<AdminHome />} />
           <Route path="wiki" element={<AdminWiki />} />
           <Route path="user" element={<AdminUser />} />
+          <Route path="ads-setting" element={<AdminAdsSetting />} />
         </Route>
       </Routes>
     </>
