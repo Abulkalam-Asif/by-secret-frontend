@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Inter';
+  src: url("./assets/fonts/Inter-VariableFont.ttf") format('truetype');
+  font-weight: 100 900;
+}
+
+@theme {
+  --color-theme-blue: #3454d1;
+  --color-theme-dark-gray: #001327;
+  --color-theme-gray: #283c50;
+  --color-theme-light-gray: #eaebef;
+
+  --font-inter: 'Inter', sans-serif;
+
+  --transition-property-margin: "margin";
+  --transition-property-width: "width";
+  --transition-property-grid-cols: "grid-template-columns";
+}
+
+body {
+  font-family: var(--font-inter);
+}
+
+.jodit-preview-container h1,
+.jodit-react-container h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.jodit-preview-container h2,
+.jodit-react-container h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.jodit-preview-container h3,
+.jodit-react-container h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+
+.jodit-react-container ol,
+.jodit-preview-container ol {
+  list-style: decimal inside;
+}
+
+.jodit-preview-container ul,
+.jodit-react-container ul {
+  list-style: inside;
+}
