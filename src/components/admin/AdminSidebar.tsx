@@ -42,6 +42,11 @@ const AdminSidebar = ({
       href: "/admin/general-settings",
       icon: <FiSettings size={16} />,
     },
+    {
+      name: "Advertisers",
+      href: "/admin/advertisers",
+      icon: <FiSettings size={16} />,
+    },
   ];
 
   const logoutHandler = () => {
@@ -95,7 +100,7 @@ const AdminSidebar = ({
                           ? "grid-cols-[0fr]"
                           : "grid-cols-[1fr] pl-3"
                       } transition-grid-cols duration-300`}>
-                      <div className={`overflow-hidden`}>
+                      <div className={`overflow-hidden whitespace-nowrap`}>
                         <span>{item.name}</span>
                       </div>
                     </div>

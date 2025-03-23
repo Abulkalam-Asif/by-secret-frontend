@@ -58,7 +58,7 @@ const AdminGeneralSettings = () => {
             </p>
           </div>
           <form>
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <InputBox
                 value={settings.companyName}
                 onChange={settingsInputHandler}
@@ -181,7 +181,7 @@ const AdminGeneralSettings = () => {
               />
             </div>
             <hr className="my-8 border-gray-200" />
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <InputBox
                 value={settings.stripePublishableKey}
                 onChange={settingsInputHandler}

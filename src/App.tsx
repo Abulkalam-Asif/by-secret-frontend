@@ -8,6 +8,7 @@ import AdminUser from "./routes/admin/AdminUser";
 import AdminAdsSetting from "./routes/admin/AdminAdsSetting";
 import AdminRouletteSetting from "./routes/admin/AdminRouletteSetting";
 import AdminGeneralSettings from "./routes/admin/AdminGeneralSettings";
+import AdminAdvertisers from "./routes/admin/AdminAdvertisers";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="ads-setting" element={<AdminAdsSetting />} />
           <Route path="roulette-setting" element={<AdminRouletteSetting />} />
           <Route path="general-settings" element={<AdminGeneralSettings />} />
+          <Route path="advertisers" element={<AdminAdvertisers />} />
         </Route>
       </Routes>
     </>
