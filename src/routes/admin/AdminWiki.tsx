@@ -2,22 +2,9 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { GET_WIKI, UPDATE_WIKI } from "../../graphql/wiki";
 import Button from "../../components/general/Button";
-
-type ClientOnlyProps = {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
-};
+import JoditEditor from "jodit-react";
 
 // Client-only wrapper component
-function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  return isClient ? children : fallback;
-}
 
 export default function AdminWiki() {
   const { data, loading: gettingWiki } = useQuery(GET_WIKI);
@@ -26,7 +13,6 @@ export default function AdminWiki() {
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
-  const [JoditEditor, setJoditEditor] = useState<any>(null);
   const [showPreview, setShowPreview] = useState(true);
 
   const config = useMemo(
@@ -49,15 +35,6 @@ export default function AdminWiki() {
     }
   }, [data]);
 
-  // Dynamically import JoditEditor only on the client side
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      import("jodit-react").then((module) => {
-        setJoditEditor(() => module.default);
-      });
-    }
-  }, []);
-
   const saveHandler = async () => {
     const response = await updateWikiMutation({
       variables: { content },
@@ -71,7 +48,7 @@ export default function AdminWiki() {
   };
 
   return (
-    <section >
+    <section>
       <div className="bg-white rounded-xl shadow-lg p-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-theme-gray">Wiki</h1>
@@ -114,23 +91,14 @@ export default function AdminWiki() {
             dangerouslySetInnerHTML={{ __html: content }}
           />
         ) : (
-          <ClientOnly
-            fallback={
-              <div className="border border-gray-200 rounded-lg p-4">
-                Editor loading...
-              </div>
-            }>
-            {JoditEditor && (
-              <JoditEditor
-                ref={editor}
-                value={content}
-                config={config}
-                tabIndex={1}
-                onBlur={(newContent: string) => setContent(newContent)}
-                onChange={(newContent: string) => setContent(newContent)}
-              />
-            )}
-          </ClientOnly>
+          <JoditEditor
+            ref={editor}
+            value={content}
+            config={config}
+            tabIndex={1}
+            onBlur={(newContent: string) => setContent(newContent)}
+            onChange={(newContent: string) => setContent(newContent)}
+          />
         )}
 
         <div className="mt-8">
