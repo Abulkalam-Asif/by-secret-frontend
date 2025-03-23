@@ -37,6 +37,11 @@ const AdminSidebar = ({
       href: "/admin/roulette-setting",
       icon: <FiSettings size={16} />,
     },
+    {
+      name: "General Settings",
+      href: "/admin/general-settings",
+      icon: <FiSettings size={16} />,
+    },
   ];
 
   const logoutHandler = () => {

@@ -1,20 +1,20 @@
 type InputBoxProps = {
   name: string;
-  idHtmlFor: string;
+  id: string;
   type: string;
   value: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required: boolean;
   disabled: boolean;
-  className: string;
+  className?: string;
   step?: string;
   min?: string;
 };
 
 const InputBox = ({
   name,
-  idHtmlFor,
+  id,
   type,
   value,
   placeholder,
@@ -29,7 +29,7 @@ const InputBox = ({
     <input
       type={type}
       name={name}
-      id={idHtmlFor}
+      id={id}
       value={value}
       placeholder={placeholder}
       onChange={onChange}

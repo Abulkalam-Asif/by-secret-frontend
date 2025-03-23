@@ -2,7 +2,7 @@ import React from "react";
 
 type SelectProps = {
   name: string;
-  idHtmlFor: string;
+  id: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -13,7 +13,7 @@ type SelectProps = {
 
 const Select = ({
   name,
-  idHtmlFor,
+  id,
   value,
   options,
   onChange,
@@ -25,7 +25,7 @@ const Select = ({
     <>
       <select
         name={name}
-        id={idHtmlFor}
+        id={id}
         value={value}
         onChange={onChange}
         required={required}

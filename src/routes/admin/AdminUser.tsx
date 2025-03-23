@@ -104,7 +104,7 @@ const AdminUser = () => {
             <div className="space-y-6">
               <InputBox
                 name="fullName"
-                idHtmlFor="fullName"
+                id="fullName"
                 type="text"
                 value={userData.fullName}
                 placeholder="Full Name"
@@ -115,7 +115,7 @@ const AdminUser = () => {
               />
               <InputBox
                 name="email"
-                idHtmlFor="email"
+                id="email"
                 type="email"
                 value={userData.email}
                 placeholder="Email"
@@ -128,7 +128,7 @@ const AdminUser = () => {
               <div className="relative">
                 <InputBox
                   name="password"
-                  idHtmlFor="password"
+                  id="password"
                   type={showPassword ? "text" : "password"}
                   value={userData.password}
                   placeholder="Password"
@@ -169,7 +169,7 @@ const AdminUser = () => {
 
               <Select
                 name="isActive"
-                idHtmlFor="isActive"
+                id="isActive"
                 value={userData.isActive ? "true" : "false"}
                 options={[
                   { value: "true", label: "Active" },

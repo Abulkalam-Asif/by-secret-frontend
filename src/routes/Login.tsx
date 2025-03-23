@@ -61,7 +61,7 @@ export default function Login() {
             <div className="space-y-6">
               <InputBox
                 name="username"
-                idHtmlFor="username"
+                id="username"
                 type="text"
                 value={loginData.username}
                 placeholder="Username"
@@ -73,7 +73,7 @@ export default function Login() {
 
               <InputBox
                 name="password"
-                idHtmlFor="password"
+                id="password"
                 type="password"
                 value={loginData.password}
                 placeholder="Password"

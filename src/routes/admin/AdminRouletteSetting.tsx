@@ -145,7 +145,7 @@ const AdminRouletteSetting = () => {
                   </label>
                   <InputBox
                     name="costPerView"
-                    idHtmlFor="costPerView"
+                    id="costPerView"
                     type="number"
                     value={settings.costPerView.toString()}
                     placeholder="0.01"
@@ -167,7 +167,7 @@ const AdminRouletteSetting = () => {
                   </label>
                   <InputBox
                     name="costPerClick"
-                    idHtmlFor="costPerClick"
+                    id="costPerClick"
                     type="number"
                     value={settings.costPerClick.toString()}
                     placeholder="0.05"
@@ -189,7 +189,7 @@ const AdminRouletteSetting = () => {
                   </label>
                   <InputBox
                     name="rewardPerView"
-                    idHtmlFor="rewardPerView"
+                    id="rewardPerView"
                     type="number"
                     value={settings.rewardPerView.toString()}
                     placeholder="0.005"
@@ -211,7 +211,7 @@ const AdminRouletteSetting = () => {
                   </label>
                   <InputBox
                     name="rewardPerClick"
-                    idHtmlFor="rewardPerClick"
+                    id="rewardPerClick"
                     type="number"
                     value={settings.rewardPerClick.toString()}
                     placeholder="0.02"

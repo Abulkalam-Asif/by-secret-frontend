@@ -4,8 +4,6 @@ import { GET_WIKI, UPDATE_WIKI } from "../../graphql/wiki";
 import Button from "../../components/general/Button";
 import JoditEditor from "jodit-react";
 
-// Client-only wrapper component
-
 export default function AdminWiki() {
   const { data, loading: gettingWiki } = useQuery(GET_WIKI);
   const [updateWikiMutation] = useMutation(UPDATE_WIKI);
