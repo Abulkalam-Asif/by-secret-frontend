@@ -37,6 +37,7 @@ const ImageInput = ({
           className="w-0 h-0 peer"
           onChange={inputHandler}
           disabled={disabled}
+          accept="image/*"
         />
         <label
           title={label}

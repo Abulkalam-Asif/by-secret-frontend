@@ -9,6 +9,7 @@ import AdminAdsSetting from "./routes/admin/AdminAdsSetting";
 import AdminRouletteSetting from "./routes/admin/AdminRouletteSetting";
 import AdminGeneralSettings from "./routes/admin/AdminGeneralSettings";
 import AdminAdvertisers from "./routes/admin/AdminAdvertisers";
+import AdvRegister from "./routes/advertiser/advRegister/AdvRegister";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="advertiser-register" element={<AdvRegister />} />
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<AdminHome />} />
           <Route path="wiki" element={<AdminWiki />} />

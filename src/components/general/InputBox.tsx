@@ -6,7 +6,7 @@ type InputBoxProps = {
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required: boolean;
-  disabled: boolean;
+  disabled?: boolean;
   className?: string;
   step?: string;
   min?: string;
@@ -20,7 +20,7 @@ const InputBox = ({
   placeholder,
   onChange,
   required,
-  disabled,
+  disabled = false,
   className = "",
   step,
   min,

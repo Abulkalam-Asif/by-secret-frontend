@@ -2,7 +2,7 @@ import { useState } from "react";
 import InputBox from "../components/general/InputBox";
 import Button from "../components/general/Button";
 import { LOGIN_ADMIN } from "../graphql/adminAuth";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useMutation } from "@apollo/client";
 
 export default function Login() {
@@ -86,11 +86,11 @@ export default function Login() {
 
             <div className="flex items-center justify-between my-10">
               <div className="text-sm">
-                <a
-                  href="#"
+                <Link
+                  to="/advertiser-register"
                   className="font-medium text-theme-blue hover:text-theme-gray">
                   Register as Advertiser
-                </a>
+                </Link>
               </div>
               <div className="text-sm">
                 <a
