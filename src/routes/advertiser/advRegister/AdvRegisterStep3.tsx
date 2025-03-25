@@ -8,6 +8,8 @@ import { useMutation } from "@apollo/client";
 import { SUBMIT_ADVERTISER_STEP3 } from "../../../graphql/advertiser";
 import { useNavigate, useLocation } from "react-router";
 import ImageInput from "../../../components/general/ImageInput";
+import { useAlert } from "../../../contexts/AlertContext";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const defaultRegisterData = {
   password: "",
@@ -18,6 +20,11 @@ const defaultRegisterData = {
 };
 
 const AdvRegisterStep3 = () => {
+  const { showAlert } = useAlert();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [token, setToken] = useState("");
@@ -43,26 +50,45 @@ const AdvRegisterStep3 = () => {
   const strengthColor = getStrengthColor(passwordStrength);
   const strengthLabel = getStrengthLabel(passwordStrength);
 
+  const validateInput = () => {
+    // check if the password contains at least 1 uppercase, 1 lowercase, 1 number, and 1 special character and must be at least 8 characters long
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!token) {
+      return "Invalid token. Please reclick the link from your email";
+    }
+    if (!registerData.password) {
+      return "Please enter password";
+    }
+    if (!passwordRegex.test(registerData.password)) {
+      return "Password requirement: at least 1 uppercase, 1 lowercase, 1 number, 1 special character, and minimum 8 characters";
+    }
+    if (!registerData.repeatPassword) {
+      return "Please repeat password";
+    }
+    if (registerData.password !== registerData.repeatPassword) {
+      return "Passwords don't match";
+    }
+    if (!registerData.phone) {
+      return "Please enter phone";
+    }
+    if (!registerData.address) {
+      return "Please enter address";
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!token) {
-      alert("Missing verification token. Please use the link from your email.");
-      return;
-    }
-
-    if (registerData.password !== registerData.repeatPassword) {
-      alert("Passwords don't match");
-      return;
-    }
-
-    if (!registerData.logo) {
-      alert("Please upload a logo");
+    const validationResponse = validateInput();
+    if (validationResponse) {
+      showAlert({ type: "error", message: validationResponse });
       return;
     }
 
     try {
-      const result = await submitAdvertiserStep3({
+      const response = await submitAdvertiserStep3({
         variables: {
           password: registerData.password,
           phone: registerData.phone,
@@ -72,18 +98,23 @@ const AdvRegisterStep3 = () => {
         },
       });
 
-      if (result.data.submitAdvertiserStep3.success) {
-        alert("Registration completed successfully!");
-        navigate("/advertiser/login");
+      if (response.data.submitAdvertiserStep3.success) {
+        showAlert({
+          type: "success",
+          message: response.data.submitAdvertiserStep3.message,
+        });
+        navigate("/");
       } else {
-        alert(
-          result.data.submitAdvertiserStep3.message ||
-            "Error completing registration"
-        );
+        showAlert({
+          type: "error",
+          message: response.data.submitAdvertiserStep3.message,
+        });
       }
     } catch (error) {
-      alert("Error submitting step 3");
-      console.error(error);
+      showAlert({
+        type: "error",
+        message: "Error submitting step 3",
+      });
     }
   };
 
@@ -94,15 +125,24 @@ const AdvRegisterStep3 = () => {
       </h2>
       <form>
         <div className="space-y-6">
-          <InputBox
-            name="password"
-            id="password"
-            type="password"
-            value={registerData.password}
-            placeholder="Password"
-            onChange={handleChange}
-            required={true}
-          />
+          <div className="relative">
+            <InputBox
+              name="password"
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={registerData.password}
+              placeholder="Password"
+              onChange={handleChange}
+              required={true}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              title={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer">
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+          </div>
           {registerData.password && (
             <div className="mt-1">
               <div className="flex items-center">
@@ -123,15 +163,24 @@ const AdvRegisterStep3 = () => {
               </p>
             </div>
           )}
-          <InputBox
-            name="repeatPassword"
-            id="repeatPassword"
-            type="password"
-            value={registerData.repeatPassword}
-            placeholder="Repeat Password"
-            onChange={handleChange}
-            required={true}
-          />
+          <div className="relative">
+            <InputBox
+              name="repeatPassword"
+              id="repeatPassword"
+              type={showRepeatPassword ? "text" : "password"}
+              value={registerData.repeatPassword}
+              placeholder="Repeat Password"
+              onChange={handleChange}
+              required={true}
+            />
+            <button
+              type="button"
+              onClick={() => setShowRepeatPassword((prev) => !prev)}
+              title={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer">
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+          </div>
           <InputBox
             name="phone"
             id="phone"

@@ -3,6 +3,7 @@ import InputBox from "../../../components/general/InputBox";
 import Button from "../../../components/general/Button";
 import { useMutation } from "@apollo/client";
 import { SUBMIT_ADVERTISER_STEP1 } from "../../../graphql/advertiser";
+import { useAlert } from "../../../contexts/AlertContext";
 
 const defaultRegisterData = {
   companyName: "",
@@ -15,6 +16,8 @@ type AdvRegisterStep1Props = {
 };
 
 const AdvRegisterStep1 = ({ moveToStep2 }: AdvRegisterStep1Props) => {
+  const { showAlert } = useAlert();
+
   const [submitAdvertiserStep1, { loading: submitAdvertiserStep1Loading }] =
     useMutation(SUBMIT_ADVERTISER_STEP1);
 
@@ -24,22 +27,57 @@ const AdvRegisterStep1 = ({ moveToStep2 }: AdvRegisterStep1Props) => {
     setRegisterData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateInput = () => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!registerData.companyName) {
+      return "Please enter company name";
+    }
+    if (!registerData.fullContactName) {
+      return "Please enter full contact name";
+    }
+    if (!registerData.email) {
+      return "Please enter email";
+    }
+    if (!emailRegex.test(registerData.email)) {
+      return "Please enter a valid email";
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const validationResponse = validateInput();
+    if (validationResponse) {
+      showAlert({ type: "error", message: validationResponse });
+      return;
+    }
 
     try {
-      await submitAdvertiserStep1({
+      const response = await submitAdvertiserStep1({
         variables: {
           companyName: registerData.companyName,
           fullContactName: registerData.fullContactName,
           email: registerData.email,
         },
       });
+      if (response.data.submitAdvertiserStep1.success) {
+        showAlert({
+          type: "success",
+          message: response.data.submitAdvertiserStep1.message,
+        });
+        moveToStep2();
+      } else {
+        showAlert({
+          type: "error",
+          message: response.data.submitAdvertiserStep1.message,
+        });
+      }
     } catch (error) {
-      alert("Error submitting step 1");
+      showAlert({
+        type: "error",
+        message: "Error submitting step 1",
+      });
     }
-
-    moveToStep2();
   };
 
   return (

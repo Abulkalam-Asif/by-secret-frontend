@@ -29,7 +29,9 @@ const AdvRegister = () => {
             <AdvRegisterStep2 />
           ) : searchParams.get("step") === "3" && searchParams.get("token") ? (
             <AdvRegisterStep3 />
-          ) : null}
+          ) : (
+            <div>Invalid step. Please go back and try again.</div>
+          )}
         </div>
       </section>
     </>
