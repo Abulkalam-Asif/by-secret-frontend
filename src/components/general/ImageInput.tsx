@@ -1,6 +1,9 @@
 type ImageInputProps = {
   label: string;
-  value: File | null;
+  value: {
+    file: File | null;
+    base64: string;
+  };
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   idHtmlFor: string;
   disabled?: boolean;
@@ -16,15 +19,19 @@ const ImageInput = ({
   className = "",
 }: ImageInputProps) => {
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      console.log(e.target.files[0]);
-      const event = {
-        target: {
-          name: idHtmlFor,
-          value: e.target.files[0],
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>;
-      onChange(event);
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onChange({
+          target: {
+            name: idHtmlFor,
+            value: { file, base64: reader.result as string },
+          },
+        } as unknown as React.ChangeEvent<HTMLInputElement>);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -45,9 +52,9 @@ const ImageInput = ({
           className={`cursor-pointer w-full px-4 py-3 border text-sm border-[#e5e7eb] text-theme-gray rounded peer-focus:outline-none peer-focus:border-theme-blue flex items-center justify-center ${
             disabled ? "bg-gray-100 cursor-not-allowed" : ""
           } ${className}`}>
-          {value ? (
+          {value.file ? (
             <span className="whitespace-nowrap text-ellipsis overflow-hidden">
-              {value.name}
+              {value.file?.name}
             </span>
           ) : (
             <span className="text-[#939da7]">{label}</span>

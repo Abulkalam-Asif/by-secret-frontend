@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InputBox from "../../../components/general/InputBox";
 import Button from "../../../components/general/Button";
 import { calculatePasswordStrength } from "../../../utils/passwordStrength/calculatePasswordStrength";
 import { getStrengthColor } from "../../../utils/passwordStrength/getStrengthColor";
 import { getStrengthLabel } from "../../../utils/passwordStrength/getStrengthLabel";
+import { useMutation } from "@apollo/client";
+import { SUBMIT_ADVERTISER_STEP3 } from "../../../graphql/advertiser";
+import { useNavigate, useLocation } from "react-router";
 import ImageInput from "../../../components/general/ImageInput";
 
 const defaultRegisterData = {
@@ -11,11 +14,26 @@ const defaultRegisterData = {
   repeatPassword: "",
   phone: "",
   address: "",
-  logo: null,
+  logo: { file: null, base64: "" },
 };
 
 const AdvRegisterStep3 = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [token, setToken] = useState("");
+  const [submitAdvertiserStep3, { loading: submitAdvertiserStep3Loading }] =
+    useMutation(SUBMIT_ADVERTISER_STEP3);
+
   const [registerData, setRegisterData] = useState(defaultRegisterData);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const urlToken = searchParams.get("token");
+    if (urlToken) {
+      setToken(urlToken);
+    }
+  }, [location]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRegisterData((prev) => ({ ...prev, [name]: value }));
@@ -27,6 +45,46 @@ const AdvRegisterStep3 = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (!token) {
+      alert("Missing verification token. Please use the link from your email.");
+      return;
+    }
+
+    if (registerData.password !== registerData.repeatPassword) {
+      alert("Passwords don't match");
+      return;
+    }
+
+    if (!registerData.logo) {
+      alert("Please upload a logo");
+      return;
+    }
+
+    try {
+      const result = await submitAdvertiserStep3({
+        variables: {
+          password: registerData.password,
+          phone: registerData.phone,
+          address: registerData.address,
+          logo: registerData.logo.base64,
+          token: token,
+        },
+      });
+
+      if (result.data.submitAdvertiserStep3.success) {
+        alert("Registration completed successfully!");
+        navigate("/advertiser/login");
+      } else {
+        alert(
+          result.data.submitAdvertiserStep3.message ||
+            "Error completing registration"
+        );
+      }
+    } catch (error) {
+      alert("Error submitting step 3");
+      console.error(error);
+    }
   };
 
   return (
@@ -94,15 +152,14 @@ const AdvRegisterStep3 = () => {
           />
           <ImageInput
             label="Upload Logo"
+            idHtmlFor="logo"
             value={registerData.logo}
             onChange={handleChange}
-            idHtmlFor="logo"
           />
         </div>
         <Button
-          // text={loading ? "Signing in..." : "Login"}
-          text="Submit"
-          // disabled={loading}
+          text={submitAdvertiserStep3Loading ? "Submitting..." : "Submit"}
+          disabled={submitAdvertiserStep3Loading}
           onClick={handleSubmit}
           className="mt-10"
         />

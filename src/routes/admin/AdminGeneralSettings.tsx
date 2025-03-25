@@ -6,7 +6,10 @@ import Button from "../../components/general/Button";
 
 const defaultSettings = {
   companyName: "",
-  logo: null,
+  logo: {
+    file: null,
+    base64: "",
+  },
   phone: "",
   email: "",
   address: "",
