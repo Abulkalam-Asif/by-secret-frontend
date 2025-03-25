@@ -21,7 +21,6 @@ const defaultRegisterData = {
 
 const AdvRegisterStep3 = () => {
   const { showAlert } = useAlert();
-  const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
