@@ -58,7 +58,7 @@ const AdminUsersTable = ({ adminsData }: AdminUsersTableProps) => {
                 )
               ) : (
                 <tr>
-                  <Td colSpan={3} align="center">
+                  <Td colSpan={4} align="center">
                     No admin users found
                   </Td>
                 </tr>
