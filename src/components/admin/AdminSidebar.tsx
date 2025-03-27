@@ -28,13 +28,13 @@ const AdminSidebar = ({
     { name: "Wiki", href: "/admin/wiki", icon: <FiFileText size={16} /> },
     { name: "Users", href: "/admin/user", icon: <FiUsers size={16} /> },
     {
-      name: "Ads Setting",
-      href: "/admin/ads-setting",
+      name: "Ads Settings",
+      href: "/admin/ads-settings",
       icon: <FiSettings size={16} />,
     },
     {
-      name: "Roulette Setting",
-      href: "/admin/roulette-setting",
+      name: "Roulette Settings",
+      href: "/admin/roulette-settings",
       icon: <FiSettings size={16} />,
     },
     {

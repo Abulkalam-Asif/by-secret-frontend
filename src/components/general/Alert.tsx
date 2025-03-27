@@ -17,15 +17,23 @@ const Alert = ({ type, message }: AlertProps) => {
   return (
     <>
       <div
-        className={`mb-5 bg-[#fafafa] py-4 px-8 rounded-l-2xl shadow-md border border-[#e6e6e6] w-full mx-auto flex items-center gap-4 ${
+        className={`mb-5 py-4 px-8 rounded-l shadow-md w-full mx-auto flex items-center gap-4 ${
           isVisible ? "animate-enter" : "opacity-0"
+        } ${
+          type === "success"
+            ? "text-green-600 bg-green-600/10"
+            : type === "error"
+            ? "text-red-600 bg-red-600/10"
+            : type === "warning"
+            ? "text-yellow-600 bg-yellow-600/10"
+            : ""
         }`}>
         {type === "success" ? (
-          <FaCheck className="text-2xl rounded-full p-1 border-2 border-[#00c800] text-[#00c800]" />
+          <FaCheck className="text-2xl rounded-full p-1 border-2 border-green-600 text-green-600" />
         ) : type === "error" ? (
-          <FaX className="text-2xl rounded-full p-1 border-2 border-[#c80000] text-[#c80000]" />
+          <FaX className="text-2xl rounded-full p-1 border-2 border-red-600 text-red-600" />
         ) : type === "warning" ? (
-          <FaExclamation className="text-2xl rounded-full p-1 border-2 border-[#c8c800] text-[#c8c800]" />
+          <FaExclamation className="text-2xl rounded-full p-1 border-2 border-yellow-600 text-yellow-600" />
         ) : null}
         <div>{message}</div>
       </div>

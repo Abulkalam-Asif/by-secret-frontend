@@ -3,42 +3,43 @@ import { useState, useEffect } from "react";
 import InputBox from "../../components/general/InputBox";
 import Button from "../../components/general/Button";
 import {
-  getRouletteSetting,
-  updateRouletteSetting,
-} from "../../graphql/rouletteSetting";
+  getRouletteSettings,
+  updateRouletteSettings,
+} from "../../graphql/rouletteSettings";
+import { useAlert } from "../../contexts/AlertContext";
+import Loader from "../../components/general/Loader";
 
-interface RouletteSettingData {
+interface RouletteSettingsData {
   costPerView: number;
   costPerClick: number;
   rewardPerView: number;
   rewardPerClick: number;
 }
 
-const defaultRouletteSettings: RouletteSettingData = {
+const defaultRouletteSettings: RouletteSettingsData = {
   costPerView: 0,
   costPerClick: 0,
   rewardPerView: 0,
   rewardPerClick: 0,
 };
 
-const AdminRouletteSetting = () => {
-  const [settings, setSettings] = useState<RouletteSettingData>(
+const AdminRouletteSettings = () => {
+  const { showAlert } = useAlert();
+  const [settings, setSettings] = useState<RouletteSettingsData>(
     defaultRouletteSettings
   );
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   // Fetch current settings
-  const { data, loading: fetchLoading } = useQuery(getRouletteSetting);
+  const { data, loading: fetchLoading } = useQuery(getRouletteSettings);
 
   // Update settings mutation
-  const [updateRouletteSettingMutation, { loading: updateLoading }] =
-    useMutation(updateRouletteSetting);
+  const [updateRouletteSettingsMutation, { loading: updateLoading }] =
+    useMutation(updateRouletteSettings);
 
   // Load settings when data is available
   useEffect(() => {
-    if (data?.getRouletteSetting) {
-      setSettings(data.getRouletteSetting);
+    if (data?.getRouletteSettings) {
+      setSettings(data.getRouletteSettings);
     }
   }, [data]);
 
@@ -51,33 +52,33 @@ const AdminRouletteSetting = () => {
 
   const validateInput = () => {
     if (settings.costPerView < 0) {
-      setError("Cost per view cannot be negative");
-      return false;
+      return "Cost per view cannot be negative";
     }
     if (settings.costPerClick < 0) {
-      setError("Cost per click cannot be negative");
-      return false;
+      return "Cost per click cannot be negative";
     }
     if (settings.rewardPerView < 0) {
-      setError("Reward per view cannot be negative");
-      return false;
+      return "Reward per view cannot be negative";
     }
     if (settings.rewardPerClick < 0) {
-      setError("Reward per click cannot be negative");
-      return false;
+      return "Reward per click cannot be negative";
     }
-    return true;
+    return "";
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!validateInput()) return;
-
-    setError("");
-    setSuccess("");
+    const validationResponse = validateInput();
+    if (validationResponse) {
+      showAlert({
+        message: validationResponse,
+        type: "error",
+      });
+      return;
+    }
 
     try {
-      const response = await updateRouletteSettingMutation({
+      const response = await updateRouletteSettingsMutation({
         variables: {
           costPerView: settings.costPerView,
           costPerClick: settings.costPerClick,
@@ -86,17 +87,22 @@ const AdminRouletteSetting = () => {
         },
       });
 
-      if (response.data.updateRouletteSetting.success) {
-        setSuccess("Roulette settings updated successfully!");
+      if (response.data.updateRouletteSettings.success) {
+        showAlert({
+          message: response.data.updateRouletteSettings.message,
+          type: "success",
+        });
       } else {
-        setError(
-          response.data.updateRouletteSetting.message ||
-            "Failed to update settings"
-        );
+        showAlert({
+          message: response.data.updateRouletteSettings.message,
+          type: "error",
+        });
       }
     } catch (err) {
-      setError("An error occurred while updating settings");
-      console.error(err);
+      showAlert({
+        message: "An error occurred while updating settings",
+        type: "error",
+      });
     }
   };
 
@@ -105,7 +111,7 @@ const AdminRouletteSetting = () => {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
+      maximumFractionDigits: 8,
     }).format(value);
   };
 
@@ -122,20 +128,8 @@ const AdminRouletteSetting = () => {
             </p>
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-md">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-4 p-3 text-sm text-green-700 bg-green-100 rounded-md">
-              {success}
-            </div>
-          )}
-
           {fetchLoading ? (
-            <div className="text-center py-8">Loading current settings...</div>
+            <Loader text="Loading current settings..." />
           ) : (
             <form>
               <div className="space-y-6">
@@ -147,13 +141,13 @@ const AdminRouletteSetting = () => {
                     name="costPerView"
                     id="costPerView"
                     type="number"
-                    value={settings.costPerView.toString()}
+                    value={settings.costPerView}
                     placeholder="0.01"
                     onChange={handleChange}
                     required={true}
                     disabled={updateLoading}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -169,13 +163,13 @@ const AdminRouletteSetting = () => {
                     name="costPerClick"
                     id="costPerClick"
                     type="number"
-                    value={settings.costPerClick.toString()}
+                    value={settings.costPerClick}
                     placeholder="0.05"
                     onChange={handleChange}
                     required={true}
                     disabled={updateLoading}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -191,13 +185,13 @@ const AdminRouletteSetting = () => {
                     name="rewardPerView"
                     id="rewardPerView"
                     type="number"
-                    value={settings.rewardPerView.toString()}
+                    value={settings.rewardPerView}
                     placeholder="0.005"
                     onChange={handleChange}
                     required={true}
                     disabled={updateLoading}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -213,13 +207,13 @@ const AdminRouletteSetting = () => {
                     name="rewardPerClick"
                     id="rewardPerClick"
                     type="number"
-                    value={settings.rewardPerClick.toString()}
+                    value={settings.rewardPerClick}
                     placeholder="0.02"
                     onChange={handleChange}
                     required={true}
                     disabled={updateLoading}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -245,4 +239,4 @@ const AdminRouletteSetting = () => {
   );
 };
 
-export default AdminRouletteSetting;
+export default AdminRouletteSettings;

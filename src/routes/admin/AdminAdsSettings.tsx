@@ -2,38 +2,39 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import InputBox from "../../components/general/InputBox";
 import Button from "../../components/general/Button";
-import { getAdsSetting, updateAdsSetting } from "../../graphql/adsSetting";
+import { getAdsSettings, updateAdsSettings } from "../../graphql/adsSettings";
+import { useAlert } from "../../contexts/AlertContext";
+import Loader from "../../components/general/Loader";
 
-interface AdsSettingData {
+interface AdsSettingsData {
   costPerView: number;
   costPerClick: number;
   rewardPerView: number;
   rewardPerClick: number;
 }
 
-const defaultAdsSettings: AdsSettingData = {
+const defaultAdsSettings: AdsSettingsData = {
   costPerView: 0,
   costPerClick: 0,
   rewardPerView: 0,
   rewardPerClick: 0,
 };
 
-const AdminAdsSetting = () => {
-  const [settings, setSettings] = useState<AdsSettingData>(defaultAdsSettings);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+const AdminAdsSettings = () => {
+  const { showAlert } = useAlert();
+  const [settings, setSettings] = useState<AdsSettingsData>(defaultAdsSettings);
 
   // Fetch current settings
-  const { data, loading: fetchLoading } = useQuery(getAdsSetting);
+  const { data, loading: fetchLoading } = useQuery(getAdsSettings);
 
   // Update settings mutation
-  const [updateAdsSettingMutation, { loading: updateLoading }] =
-    useMutation(updateAdsSetting);
+  const [updateAdsSettingsMutation, { loading: updatingSettings }] =
+    useMutation(updateAdsSettings);
 
   // Load settings when data is available
   useEffect(() => {
-    if (data?.getAdsSetting) {
-      setSettings(data.getAdsSetting);
+    if (data?.getAdsSettings) {
+      setSettings(data.getAdsSettings);
     }
   }, [data]);
 
@@ -46,33 +47,33 @@ const AdminAdsSetting = () => {
 
   const validateInput = () => {
     if (settings.costPerView < 0) {
-      setError("Cost per view cannot be negative");
-      return false;
+      return "Cost per view cannot be negative";
     }
     if (settings.costPerClick < 0) {
-      setError("Cost per click cannot be negative");
-      return false;
+      return "Cost per click cannot be negative";
     }
     if (settings.rewardPerView < 0) {
-      setError("Reward per view cannot be negative");
-      return false;
+      return "Reward per view cannot be negative";
     }
     if (settings.rewardPerClick < 0) {
-      setError("Reward per click cannot be negative");
-      return false;
+      return "Reward per click cannot be negative";
     }
-    return true;
+    return "";
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!validateInput()) return;
-
-    setError("");
-    setSuccess("");
+    const validationResponse = validateInput();
+    if (validationResponse) {
+      showAlert({
+        message: validationResponse,
+        type: "error",
+      });
+      return;
+    }
 
     try {
-      const response = await updateAdsSettingMutation({
+      const response = await updateAdsSettingsMutation({
         variables: {
           costPerView: settings.costPerView,
           costPerClick: settings.costPerClick,
@@ -81,16 +82,22 @@ const AdminAdsSetting = () => {
         },
       });
 
-      if (response.data.updateAdsSetting.success) {
-        setSuccess("Ad settings updated successfully!");
+      if (response.data.updateAdsSettings.success) {
+        showAlert({
+          message: "Settings updated successfully",
+          type: "success",
+        });
       } else {
-        setError(
-          response.data.updateAdsSetting.message || "Failed to update settings"
-        );
+        showAlert({
+          message: "An error occurred while updating settings",
+          type: "error",
+        });
       }
     } catch (err) {
-      setError("An error occurred while updating settings");
-      console.error(err);
+      showAlert({
+        message: "An error occurred while updating settings",
+        type: "error",
+      });
     }
   };
 
@@ -99,14 +106,14 @@ const AdminAdsSetting = () => {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
+      maximumFractionDigits: 8,
     }).format(value);
   };
 
   return (
     <>
-      <section >
-        <div className="max-w-[450px] w-full mx-auto bg-white rounded-xl shadow-lg p-8">
+      <section>
+        <div className="max-w-[450px] w-full mx-auto bg-white rounded-lg shadow-lg p-8">
           <div className="mb-8 text-theme-gray">
             <h1 className="text-2xl font-bold text-theme-gray">
               Advertisement Settings
@@ -115,21 +122,8 @@ const AdminAdsSetting = () => {
               Configure costs for advertisers and rewards for users
             </p>
           </div>
-
-          {error && (
-            <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-md">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="mb-4 p-3 text-sm text-green-700 bg-green-100 rounded-md">
-              {success}
-            </div>
-          )}
-
           {fetchLoading ? (
-            <div className="text-center py-8">Loading current settings...</div>
+            <Loader text="Loading current settings..." />
           ) : (
             <form>
               <div className="space-y-6">
@@ -141,13 +135,13 @@ const AdminAdsSetting = () => {
                     name="costPerView"
                     id="costPerView"
                     type="number"
-                    value={settings.costPerView.toString()}
+                    value={settings.costPerView}
                     placeholder="0.01"
                     onChange={handleChange}
                     required={true}
-                    disabled={updateLoading}
+                    disabled={updatingSettings}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -163,13 +157,13 @@ const AdminAdsSetting = () => {
                     name="costPerClick"
                     id="costPerClick"
                     type="number"
-                    value={settings.costPerClick.toString()}
+                    value={settings.costPerClick}
                     placeholder="0.05"
                     onChange={handleChange}
                     required={true}
-                    disabled={updateLoading}
+                    disabled={updatingSettings}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -185,13 +179,13 @@ const AdminAdsSetting = () => {
                     name="rewardPerView"
                     id="rewardPerView"
                     type="number"
-                    value={settings.rewardPerView.toString()}
+                    value={settings.rewardPerView}
                     placeholder="0.005"
                     onChange={handleChange}
                     required={true}
-                    disabled={updateLoading}
+                    disabled={updatingSettings}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -207,13 +201,13 @@ const AdminAdsSetting = () => {
                     name="rewardPerClick"
                     id="rewardPerClick"
                     type="number"
-                    value={settings.rewardPerClick.toString()}
+                    value={settings.rewardPerClick}
                     placeholder="0.02"
                     onChange={handleChange}
                     required={true}
-                    disabled={updateLoading}
+                    disabled={updatingSettings}
                     className=""
-                    step="0.0001"
+                    step="0.00001"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -225,9 +219,9 @@ const AdminAdsSetting = () => {
               <div className="mt-8">
                 <Button
                   text={
-                    updateLoading ? "Updating settings..." : "Save Settings"
+                    updatingSettings ? "Updating settings..." : "Save Settings"
                   }
-                  disabled={updateLoading || fetchLoading}
+                  disabled={updatingSettings || fetchLoading}
                   onClick={handleSubmit}
                 />
               </div>
@@ -239,4 +233,4 @@ const AdminAdsSetting = () => {
   );
 };
 
-export default AdminAdsSetting;
+export default AdminAdsSettings;

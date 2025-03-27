@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const getRouletteSetting = gql`
-  query GetRouletteSetting {
-    getRouletteSetting {
+export const getAdsSettings = gql`
+  query GetAdsSettings {
+    getAdsSettings {
       costPerView
       costPerClick
       rewardPerView
@@ -11,14 +11,14 @@ export const getRouletteSetting = gql`
   }
 `;
 
-export const updateRouletteSetting = gql`
-  mutation UpdateRouletteSetting(
+export const updateAdsSettings = gql`
+  mutation UpdateAdsSettings(
     $costPerView: Float
     $costPerClick: Float
     $rewardPerView: Float
     $rewardPerClick: Float
   ) {
-    updateRouletteSetting(
+    updateAdsSettings(
       costPerView: $costPerView
       costPerClick: $costPerClick
       rewardPerView: $rewardPerView

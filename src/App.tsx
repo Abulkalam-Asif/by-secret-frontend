@@ -5,11 +5,11 @@ import AdminWiki from "./routes/admin/AdminWiki";
 import AdminHome from "./routes/admin/AdminHome";
 import Home from "./routes/Home";
 import AdminUser from "./routes/admin/AdminUser";
-import AdminAdsSetting from "./routes/admin/AdminAdsSetting";
-import AdminRouletteSetting from "./routes/admin/AdminRouletteSetting";
+import AdminAdsSettings from "./routes/admin/AdminAdsSettings";
 import AdminGeneralSettings from "./routes/admin/AdminGeneralSettings";
 import AdminAdvertisers from "./routes/admin/AdminAdvertisers";
 import AdvRegister from "./routes/advertiser/advRegister/AdvRegister";
+import AdminRouletteSettings from "./routes/admin/AdminRouletteSettings";
 
 function App() {
   return (
@@ -22,8 +22,8 @@ function App() {
           <Route index element={<AdminHome />} />
           <Route path="wiki" element={<AdminWiki />} />
           <Route path="user" element={<AdminUser />} />
-          <Route path="ads-setting" element={<AdminAdsSetting />} />
-          <Route path="roulette-setting" element={<AdminRouletteSetting />} />
+          <Route path="ads-settings" element={<AdminAdsSettings />} />
+          <Route path="roulette-settings" element={<AdminRouletteSettings />} />
           <Route path="general-settings" element={<AdminGeneralSettings />} />
           <Route path="advertisers" element={<AdminAdvertisers />} />
         </Route>
