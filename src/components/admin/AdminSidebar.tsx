@@ -26,7 +26,11 @@ const AdminSidebar = ({
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: <FiHome size={16} /> },
     { name: "Wiki", href: "/admin/wiki", icon: <FiFileText size={16} /> },
-    { name: "Users", href: "/admin/user", icon: <FiUsers size={16} /> },
+    {
+      name: "Admin Users",
+      href: "/admin/admin-users",
+      icon: <FiUsers size={16} />,
+    },
     {
       name: "Ads Settings",
       href: "/admin/ads-settings",

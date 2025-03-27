@@ -21,11 +21,11 @@ const Alert = ({ type, message }: AlertProps) => {
           isVisible ? "animate-enter" : "opacity-0"
         } ${
           type === "success"
-            ? "text-green-600 bg-green-600/10"
+            ? "text-green-600 bg-green-100"
             : type === "error"
-            ? "text-red-600 bg-red-600/10"
+            ? "text-red-600 bg-red-100"
             : type === "warning"
-            ? "text-yellow-600 bg-yellow-600/10"
+            ? "text-yellow-600 bg-yellow-100"
             : ""
         }`}>
         {type === "success" ? (

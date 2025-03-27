@@ -1,4 +1,5 @@
-import React from "react";
+import Th from "../../components/general/Th";
+import Td from "../../components/general/Td";
 
 const sampleData = [
   {
@@ -81,7 +82,7 @@ const AdminAdvertisers = () => {
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-theme-gray">Advertisers</h1>
             <p className="text-sm text-gray-500 mt-2">
-              Here is a table of all the advertisers.
+              List of all advertisers in the system
             </p>
           </div>
           <div className="w-full overflow-x-auto">
@@ -89,7 +90,7 @@ const AdminAdvertisers = () => {
               <thead>
                 <tr>
                   <Th>Company Name</Th>
-                  <Th>Logo</Th>
+                  <Th align="center">Logo</Th>
                   <Th>Full Contact Name</Th>
                   <Th>Phone Number</Th>
                   <Th>Email</Th>
@@ -133,24 +134,3 @@ const AdminAdvertisers = () => {
 };
 
 export default AdminAdvertisers;
-
-type ThProps = {
-  children: React.ReactNode;
-};
-const Th = ({ children }: ThProps) => (
-  <th className="text-xs font-semibold text-theme-gray uppercase border-2 border-theme-light-gray p-2">
-    {children}
-  </th>
-);
-
-type TdProps = {
-  children: React.ReactNode;
-  align?: "center" | "left" | "right";
-};
-const Td = ({ children, align = "left" }: TdProps) => (
-  <td
-    align={align}
-    className="text-sm text-theme-dark-gray border-2 border-theme-light-gray p-2">
-    {children}
-  </td>
-);

@@ -87,17 +87,12 @@ const AdminRouletteSettings = () => {
         },
       });
 
-      if (response.data.updateRouletteSettings.success) {
-        showAlert({
-          message: response.data.updateRouletteSettings.message,
-          type: "success",
-        });
-      } else {
-        showAlert({
-          message: response.data.updateRouletteSettings.message,
-          type: "error",
-        });
-      }
+      showAlert({
+        message: response.data.updateRouletteSettings.message,
+        type: response.data.updateRouletteSettings.success
+          ? "success"
+          : "error",
+      });
     } catch (err) {
       showAlert({
         message: "An error occurred while updating settings",

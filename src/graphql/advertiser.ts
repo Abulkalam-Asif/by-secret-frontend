@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const SUBMIT_ADVERTISER_STEP1 = gql`
-  mutation submitAdvertiserStep1(
+  mutation SubmitAdvertiserStep1(
     $companyName: String!
     $fullContactName: String!
     $email: String!
@@ -18,7 +18,7 @@ export const SUBMIT_ADVERTISER_STEP1 = gql`
 `;
 
 export const SUBMIT_ADVERTISER_STEP3 = gql`
-  mutation submitAdvertiserStep3(
+  mutation SubmitAdvertiserStep3(
     $password: String!
     $phone: String!
     $address: String!

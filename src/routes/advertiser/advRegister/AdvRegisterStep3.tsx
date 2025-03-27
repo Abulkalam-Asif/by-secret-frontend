@@ -51,8 +51,9 @@ const AdvRegisterStep3 = () => {
 
   const validateInput = () => {
     // check if the password contains at least 1 uppercase, 1 lowercase, 1 number, and 1 special character and must be at least 8 characters long
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex = new RegExp(
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$"
+    );
     if (!token) {
       return "Invalid token. Please reclick the link from your email";
     }
