@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router";
 import Login from "./routes/Login";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminWiki from "./routes/admin/AdminWiki";
-import AdminHome from "./routes/admin/AdminHome";
+import AdminDashboard from "./routes/admin/AdminDashboard";
 import Home from "./routes/Home";
 import AdminUsers from "./routes/admin/AdminUsers";
 import AdminAdsSettings from "./routes/admin/AdminAdsSettings";
@@ -21,7 +21,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="advertiser-register" element={<AdvRegister />} />
         <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<AdminHome />} />
+          <Route index element={<AdminDashboard />} />
           <Route path="wiki" element={<AdminWiki />} />
           <Route path="admin-users" element={<AdminUsers />} />
           <Route path="ads-settings" element={<AdminAdsSettings />} />
