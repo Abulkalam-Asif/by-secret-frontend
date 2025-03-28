@@ -3,11 +3,12 @@ import { useState, useEffect } from "react";
 import InputBox from "../../components/general/InputBox";
 import Button from "../../components/general/Button";
 import {
-  getRouletteSettings,
-  updateRouletteSettings,
+  GET_ROULETTE_SETTINGS,
+  UPDATE_ROULETTE_SETTINGS,
 } from "../../graphql/rouletteSettings";
 import { useAlert } from "../../contexts/AlertContext";
 import Loader from "../../components/general/Loader";
+import client from "../../apolloClient";
 
 interface RouletteSettingsData {
   costPerView: number;
@@ -30,11 +31,11 @@ const AdminRouletteSettings = () => {
   );
 
   // Fetch current settings
-  const { data, loading: fetchLoading } = useQuery(getRouletteSettings);
+  const { data, loading: fetchLoading } = useQuery(GET_ROULETTE_SETTINGS);
 
   // Update settings mutation
   const [updateRouletteSettingsMutation, { loading: updateLoading }] =
-    useMutation(updateRouletteSettings);
+    useMutation(UPDATE_ROULETTE_SETTINGS);
 
   // Load settings when data is available
   useEffect(() => {
@@ -93,6 +94,9 @@ const AdminRouletteSettings = () => {
           ? "success"
           : "error",
       });
+      if (response.data.updateRouletteSettings.success) {
+        await client.refetchQueries({ include: [GET_ROULETTE_SETTINGS] });
+      }
     } catch (err) {
       showAlert({
         message: "An error occurred while updating settings",

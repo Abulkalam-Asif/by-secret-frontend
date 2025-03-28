@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const getAdsSettings = gql`
+export const GET_ADS_SETTINGS = gql`
   query GetAdsSettings {
     getAdsSettings {
       costPerView
@@ -11,7 +11,7 @@ export const getAdsSettings = gql`
   }
 `;
 
-export const updateAdsSettings = gql`
+export const UPDATE_ADS_SETTINGS = gql`
   mutation UpdateAdsSettings(
     $costPerView: Float
     $costPerClick: Float

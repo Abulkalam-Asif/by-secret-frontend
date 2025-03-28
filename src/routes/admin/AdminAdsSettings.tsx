@@ -2,9 +2,13 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 import InputBox from "../../components/general/InputBox";
 import Button from "../../components/general/Button";
-import { getAdsSettings, updateAdsSettings } from "../../graphql/adsSettings";
+import {
+  GET_ADS_SETTINGS,
+  UPDATE_ADS_SETTINGS,
+} from "../../graphql/adsSettings";
 import { useAlert } from "../../contexts/AlertContext";
 import Loader from "../../components/general/Loader";
+import client from "../../apolloClient";
 
 interface AdsSettingsData {
   costPerView: number;
@@ -25,11 +29,11 @@ const AdminAdsSettings = () => {
   const [settings, setSettings] = useState<AdsSettingsData>(defaultAdsSettings);
 
   // Fetch current settings
-  const { data, loading: fetchLoading } = useQuery(getAdsSettings);
+  const { data, loading: fetchLoading } = useQuery(GET_ADS_SETTINGS);
 
   // Update settings mutation
   const [updateAdsSettingsMutation, { loading: updatingSettings }] =
-    useMutation(updateAdsSettings);
+    useMutation(UPDATE_ADS_SETTINGS);
 
   // Load settings when data is available
   useEffect(() => {
@@ -82,16 +86,12 @@ const AdminAdsSettings = () => {
         },
       });
 
+      showAlert({
+        message: response.data.updateAdsSettings.message,
+        type: response.data.updateAdsSettings.success ? "success" : "error",
+      });
       if (response.data.updateAdsSettings.success) {
-        showAlert({
-          message: "Settings updated successfully",
-          type: "success",
-        });
-      } else {
-        showAlert({
-          message: "An error occurred while updating settings",
-          type: "error",
-        });
+        await client.refetchQueries({ include: [GET_ADS_SETTINGS] });
       }
     } catch (err) {
       showAlert({
