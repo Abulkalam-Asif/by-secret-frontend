@@ -1,14 +1,13 @@
 "use client";
 
 import { BiPowerOff } from "react-icons/bi";
-import {
-  FiHome,
-  FiFileText,
-  FiChevronRight,
-  FiChevronLeft,
-  FiUsers,
-  FiSettings,
-} from "react-icons/fi";
+import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { AiOutlineDashboard } from "react-icons/ai";
+import { BiBook, BiUser } from "react-icons/bi";
+import { MdPendingActions, MdOutlineApproval } from "react-icons/md";
+import { RiAdvertisementLine } from "react-icons/ri";
+import { GiPokerHand } from "react-icons/gi";
+import { FiSettings } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
 
 type AdminSidebarProps = {
@@ -24,22 +23,26 @@ const AdminSidebar = ({
   const navigate = useNavigate();
 
   const navItems = [
-    { name: "Dashboard", href: "/admin", icon: <FiHome size={16} /> },
-    { name: "Wiki", href: "/admin/wiki", icon: <FiFileText size={16} /> },
+    {
+      name: "Dashboard",
+      href: "/admin",
+      icon: <AiOutlineDashboard size={16} />,
+    },
+    { name: "Wiki", href: "/admin/wiki", icon: <BiBook size={16} /> },
     {
       name: "Admin Users",
       href: "/admin/admin-users",
-      icon: <FiUsers size={16} />,
+      icon: <BiUser size={16} />,
     },
     {
       name: "Ads Settings",
       href: "/admin/ads-settings",
-      icon: <FiSettings size={16} />,
+      icon: <RiAdvertisementLine size={16} />,
     },
     {
       name: "Roulette Settings",
       href: "/admin/roulette-settings",
-      icon: <FiSettings size={16} />,
+      icon: <GiPokerHand size={16} />,
     },
     {
       name: "General Settings",
@@ -49,7 +52,17 @@ const AdminSidebar = ({
     {
       name: "Advertisers",
       href: "/admin/advertisers",
-      icon: <FiSettings size={16} />,
+      icon: <RiAdvertisementLine size={16} />,
+    },
+    {
+      name: "Pending Campaigns",
+      href: "/admin/pending-campaigns",
+      icon: <MdPendingActions size={16} />,
+    },
+    {
+      name: "Approved Campaigns",
+      href: "/admin/approved-campaigns",
+      icon: <MdOutlineApproval size={16} />,
     },
   ];
 

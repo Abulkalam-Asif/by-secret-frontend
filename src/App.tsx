@@ -10,6 +10,8 @@ import AdminGeneralSettings from "./routes/admin/AdminGeneralSettings";
 import AdminAdvertisers from "./routes/admin/AdminAdvertisers";
 import AdvRegister from "./routes/advertiser/advRegister/AdvRegister";
 import AdminRouletteSettings from "./routes/admin/AdminRouletteSettings";
+import AdminPendingCampaigns from "./routes/admin/AdminPendingCampaigns";
+import AdminApprovedCampaigns from "./routes/admin/AdminApprovedCampaigns";
 
 function App() {
   return (
@@ -26,6 +28,11 @@ function App() {
           <Route path="roulette-settings" element={<AdminRouletteSettings />} />
           <Route path="general-settings" element={<AdminGeneralSettings />} />
           <Route path="advertisers" element={<AdminAdvertisers />} />
+          <Route path="pending-campaigns" element={<AdminPendingCampaigns />} />
+          <Route
+            path="approved-campaigns"
+            element={<AdminApprovedCampaigns />}
+          />
         </Route>
       </Routes>
     </>
