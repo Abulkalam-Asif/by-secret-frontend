@@ -8,8 +8,8 @@ import { calculatePasswordStrength } from "../../utils/passwordStrength/calculat
 import { getStrengthColor } from "../../utils/passwordStrength/getStrengthColor";
 import { getStrengthLabel } from "../../utils/passwordStrength/getStrengthLabel";
 import { useAlert } from "../../contexts/AlertContext";
-import { CREATE_ADMIN } from "../../graphql/adminAuth";
-import { AdminUserDisplayType } from "../../types";
+import { CREATE_ADMIN, GET_ALL_ADMINS } from "../../graphql/adminAuth";
+import client from "../../apolloClient";
 
 const defaultAdminUserData = {
   fullName: "",
@@ -18,13 +18,7 @@ const defaultAdminUserData = {
   isActive: true,
 };
 
-type CreateAdminUserFormProps = {
-  setNewlyCreatedAdmin: (newAdmin: AdminUserDisplayType) => void;
-};
-
-const CreateAdminUserForm = ({
-  setNewlyCreatedAdmin,
-}: CreateAdminUserFormProps) => {
+const CreateAdminUserForm = () => {
   const { showAlert } = useAlert();
 
   const [createAdminMutation, { loading: creatingAdmin }] =
@@ -86,11 +80,8 @@ const CreateAdminUserForm = ({
       });
       if (response.data.createAdmin.success) {
         setAdminUserData(defaultAdminUserData);
-        setNewlyCreatedAdmin({
-          fullName: adminUserData.fullName,
-          username: adminUserData.username,
-          isActive: adminUserData.isActive,
-        });
+        // Refetch the admin users data to include the newly created admin
+        await client.refetchQueries({ include: [GET_ALL_ADMINS] });
       }
       showAlert({
         message: response.data.createAdmin.message,

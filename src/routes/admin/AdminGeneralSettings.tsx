@@ -68,7 +68,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Company Name"
                 id="companyName"
                 name="companyName"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -84,7 +83,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Phone"
                 id="phone"
                 name="phone"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -94,7 +92,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Email"
                 id="email"
                 name="email"
-                required={true}
                 type="email"
                 disabled={false}
               />
@@ -104,7 +101,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Address"
                 id="address"
                 name="address"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -114,7 +110,6 @@ const AdminGeneralSettings = () => {
                 placeholder="City"
                 id="city"
                 name="city"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -124,7 +119,6 @@ const AdminGeneralSettings = () => {
                 placeholder="State"
                 id="state"
                 name="state"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -134,7 +128,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Country"
                 id="country"
                 name="country"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -144,7 +137,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Zip Code"
                 id="zipCode"
                 name="zipCode"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -191,7 +183,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Stripe Publishable Key"
                 id="stripePublishableKey"
                 name="stripePublishableKey"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -201,7 +192,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Stripe Private Key"
                 id="stripePrivateKey"
                 name="stripePrivateKey"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -211,7 +201,6 @@ const AdminGeneralSettings = () => {
                 placeholder="Google Maps API Key"
                 id="googleMapsApiKey"
                 name="googleMapsApiKey"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -221,7 +210,6 @@ const AdminGeneralSettings = () => {
                 placeholder="OneLogin Publishable Key"
                 id="oneLoginPublishableKey"
                 name="oneLoginPublishableKey"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -231,7 +219,6 @@ const AdminGeneralSettings = () => {
                 placeholder="OneLogin Private Key"
                 id="oneLoginPrivateKey"
                 name="oneLoginPrivateKey"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -241,7 +228,6 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP Host"
                 id="smtpHost"
                 name="smtpHost"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -251,7 +237,6 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP Port"
                 id="smtpPort"
                 name="smtpPort"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -261,7 +246,6 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP Username"
                 id="smtpUsername"
                 name="smtpUsername"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -271,7 +255,6 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP Password"
                 id="smtpPassword"
                 name="smtpPassword"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -281,7 +264,6 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP From Email"
                 id="smtpFromEmail"
                 name="smtpFromEmail"
-                required={true}
                 type="text"
                 disabled={false}
               />
@@ -291,7 +273,6 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP From Name"
                 id="smtpFromName"
                 name="smtpFromName"
-                required={true}
                 type="text"
                 disabled={false}
               />

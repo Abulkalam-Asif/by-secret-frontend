@@ -40,17 +40,10 @@ const AdminUsers = () => {
     }
   }, [adminDataFetchError]);
 
-  const setNewlyCreatedAdmin = (newAdmin: AdminUserDisplayType) => {
-    setAdminsData((prevAdminsData: AdminUserDisplayType[]) => [
-      ...prevAdminsData,
-      newAdmin,
-    ]);
-  };
-
   return (
     <>
       <section className="space-y-8">
-        <CreateAdminUserForm setNewlyCreatedAdmin={setNewlyCreatedAdmin} />
+        <CreateAdminUserForm />
         {loadingAdmins ? (
           <Loader text="Loading Admin Users..." />
         ) : (

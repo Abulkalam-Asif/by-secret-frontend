@@ -12,7 +12,8 @@ export const GET_WIKI = gql`
 export const UPDATE_WIKI = gql`
   mutation UpdateWiki($content: String!) {
     updateWiki(content: $content) {
-      content
+      success
+      message
     }
   }
 `;
