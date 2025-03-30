@@ -12,6 +12,8 @@ import {
   OperationVariables,
 } from "@apollo/client";
 import { useAlert } from "../../contexts/AlertContext";
+import { useState } from "react";
+import ChangeAdminPasswordModal from "./ChangeAdminPasswordModal";
 
 type AdminUsersTableProps = {
   adminsData: {
@@ -38,6 +40,8 @@ function AdminUsersTable({
   const { showAlert } = useAlert();
   const { email: adminEmail } = useAdmin();
   const isPseudoSuperAdminLoggedIn = adminEmail === "admin@admin.com";
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [selectedAdminEmail, setSelectedAdminEmail] = useState("");
 
   const changeAdminStatusHandler = async (
     event: React.MouseEvent,
@@ -54,6 +58,11 @@ function AdminUsersTable({
       message: response.data.changeAdminStatus.message,
       type: "success",
     });
+  };
+
+  const openPasswordModal = (email: string) => {
+    setSelectedAdminEmail(email);
+    setPasswordModalOpen(true);
   };
 
   return (
@@ -116,7 +125,7 @@ function AdminUsersTable({
                             )}
                             <IconButton
                               icon={<MdOutlinePassword />}
-                              onClick={() => {}}
+                              onClick={() => openPasswordModal(admin.email)}
                               className="text-xl"
                               title="Change Password"
                             />
@@ -137,6 +146,13 @@ function AdminUsersTable({
           </table>
         </div>
       </div>
+      {passwordModalOpen && (
+        <ChangeAdminPasswordModal
+          isOpen={passwordModalOpen}
+          onClose={() => setPasswordModalOpen(false)}
+          adminEmail={selectedAdminEmail}
+        />
+      )}
     </>
   );
 }

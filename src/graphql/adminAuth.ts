@@ -54,3 +54,12 @@ export const CHANGE_ADMIN_STATUS = gql`
     }
   }
 `;
+
+export const CHANGE_ADMIN_PASSWORD = gql`
+  mutation ChangeAdminPassword($email: String!, $newPassword: String!) {
+    changeAdminPassword(email: $email, newPassword: $newPassword) {
+      success
+      message
+    }
+  }
+`;
