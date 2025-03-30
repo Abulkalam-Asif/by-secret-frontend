@@ -9,6 +9,7 @@ import {
 import Button from "../../components/general/Button";
 import { useState } from "react";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
+import { useAdmin } from "../../contexts/AdminContext";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -152,6 +153,7 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
 };
 
 const AdminDashboard = () => {
+  const { email } = useAdmin();
   const dashboardData = {
     totalAdvertisers: 125,
     activeAdvertisers: 98,
@@ -201,7 +203,7 @@ const AdminDashboard = () => {
       <div className="mb-8 flex flex-wrap items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-theme-gray">
-            Admin Dashboard
+            Welcome, {email}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             Overview of platform metrics and performance

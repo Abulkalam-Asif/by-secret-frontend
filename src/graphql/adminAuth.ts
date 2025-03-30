@@ -10,6 +10,14 @@ export const GET_ALL_ADMINS = gql`
   }
 `;
 
+export const AUTHORIZE_ADMIN = gql`
+  query AuthorizeAdmin {
+    authorizeAdmin {
+      email
+    }
+  }
+`;
+
 export const LOGIN_ADMIN = gql`
   mutation LoginAdmin($email: String!, $password: String!) {
     loginAdmin(email: $email, password: $password) {
@@ -38,9 +46,9 @@ export const CREATE_ADMIN = gql`
   }
 `;
 
-export const AUTHORIZE_ADMIN = gql`
-  mutation AuthorizeAdmin {
-    authorizeAdmin {
+export const CHANGE_ADMIN_STATUS = gql`
+  mutation ChangeAdminStatus($email: String!) {
+    changeAdminStatus(email: $email) {
       success
       message
     }

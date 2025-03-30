@@ -8,15 +8,23 @@ const Loader = ({ text }: LoaderProps) => {
       className={
         "flex flex-col items-center justify-center h-screen w-full fixed top-0 left-0 bg-white/40 z-[9999] backdrop-blur-lg"
       }>
-      <div className={"flex justify-around w-24"}>
+      <div className={"flex justify-between w-28"}>
         <div
-          className={"w-5 h-5 rounded-full bg-theme-gray animate-bounce"}></div>
+          className={
+            "w-6 h-6 rounded-full bg-theme-gray animate-bounce2"
+          }></div>
         <div
-          className={"w-5 h-5 rounded-full bg-theme-gray animate-bounce"}></div>
+          className={
+            "w-6 h-6 rounded-full bg-theme-gray animate-bounce2"
+          }></div>
         <div
-          className={"w-5 h-5 rounded-full bg-theme-gray animate-bounce"}></div>
+          className={
+            "w-6 h-6 rounded-full bg-theme-gray animate-bounce2"
+          }></div>
       </div>
-      {text && <div className={"mt-5 text-lg text-theme-gray"}>{text}</div>}
+      {text && (
+        <div className={"mt-5 text-lg font-medium text-theme-gray"}>{text}</div>
+      )}
     </div>
   );
 };

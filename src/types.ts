@@ -5,6 +5,6 @@ export type AlertType = {
 
 export type AdminUserDisplayType = {
   fullName: string;
-  username: string;
+  email: string;
   isActive: boolean;
 };

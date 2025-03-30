@@ -19,7 +19,7 @@
   --transition-property-grid-cols: "grid-template-columns";
 
   --animate-enter: enter 0.3s ease-in-out;
-  --animate-bounce1: bounce 1.5s infinite ease-in-out;
+  --animate-bounce2: bounce2 1.5s infinite ease-in-out;
 
   @keyframes enter {
 
@@ -32,7 +32,7 @@
     }
   }
 
-  @keyframes bounce {
+  @keyframes bounce2 {
 
     0%,
     80%,

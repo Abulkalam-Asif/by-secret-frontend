@@ -3,55 +3,60 @@ import { Outlet, useNavigate } from "react-router";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import useAuthorizeAdmin from "../hooks/admin/useAuthorizeAdmin";
 import Loader from "../components/general/Loader";
+import { useAdmin } from "../contexts/AdminContext";
 
 const AdminLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const { authorizeAdmin, refreshAuthorization } = useAuthorizeAdmin();
+  const { authorizeAdmin, loadingAuthorizeAdmin } = useAuthorizeAdmin();
   const navigate = useNavigate();
   const authCheckPerformed = useRef(false);
+  const { setEmail } = useAdmin();
 
   // Initial authorization
   useEffect(() => {
-    // Only run the auth check once
-    if (authCheckPerformed.current) return;
+    if (authCheckPerformed.current && !loadingAuthorizeAdmin) return;
 
     const checkAuth = async () => {
       try {
         const result = await authorizeAdmin();
-        if (result.success) {
+
+        if (result.isLoading) return;
+
+        authCheckPerformed.current = true;
+
+        if (result.email) {
           setIsAuthorized(true);
+          setEmail(result.email);
         } else {
           navigate("/login");
         }
       } catch (error) {
         console.error("Authorization failed:", error);
         navigate("/login");
-      } finally {
-        setIsLoading(false);
       }
     };
 
     checkAuth();
-    authCheckPerformed.current = true;
-  }, [authorizeAdmin, navigate]);
+  }, [authorizeAdmin, navigate, setEmail, loadingAuthorizeAdmin]);
 
   // Periodic session validation (every 5 minutes)
   useEffect(() => {
     if (!isAuthorized) return;
 
     const intervalId = setInterval(async () => {
-      const isStillAuthorized = await refreshAuthorization();
-      if (!isStillAuthorized) {
+      const result = await authorizeAdmin();
+      if (result.isLoading) return;
+
+      if (!result.email) {
         navigate("/login");
       }
-    }, 5 * 60 * 1000); // 5 minutes
+    }, 5 * 60 * 1000);
 
     return () => clearInterval(intervalId);
-  }, [isAuthorized, refreshAuthorization, navigate]);
+  }, [isAuthorized, navigate, authorizeAdmin]);
 
-  if (isLoading) {
+  if (loadingAuthorizeAdmin) {
     return <Loader text="Loading..." />;
   }
 

@@ -10,10 +10,11 @@ import { getStrengthLabel } from "../../utils/passwordStrength/getStrengthLabel"
 import { useAlert } from "../../contexts/AlertContext";
 import { CREATE_ADMIN, GET_ALL_ADMINS } from "../../graphql/adminAuth";
 import client from "../../apolloClient";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "../../constants";
 
 const defaultAdminUserData = {
   fullName: "",
-  username: "",
+  email: "",
   password: "",
   isActive: true,
 };
@@ -39,20 +40,19 @@ const CreateAdminUserForm = () => {
 
   const validateInput = () => {
     // check if the password contains at least 1 uppercase, 1 lowercase, 1 number, and 1 special character and must be at least 8 characters long
-    const passwordRegex = new RegExp(
-      "/^(?=.*[a-z])(?=.*[A-Z])(?=.*d)[a-zA-Zd]{8,}$/"
-    );
-
     if (adminUserData.fullName.trim() === "") {
       return "Full name is required";
     }
-    if (adminUserData.username.trim() === "") {
-      return "Username is required";
+    if (adminUserData.email.trim() === "") {
+      return "email is required";
+    }
+    if (EMAIL_REGEX.test(adminUserData.email) === false) {
+      return "Invalid email address";
     }
     if (adminUserData.password.trim() === "") {
       return "Password is required";
     }
-    if (!passwordRegex.test(adminUserData.password)) {
+    if (!PASSWORD_REGEX.test(adminUserData.password)) {
       return "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character";
     }
     return "";
@@ -73,7 +73,7 @@ const CreateAdminUserForm = () => {
       const response = await createAdminMutation({
         variables: {
           fullName: adminUserData.fullName,
-          username: adminUserData.username,
+          email: adminUserData.email,
           password: adminUserData.password,
           isActive: adminUserData.isActive,
         },
@@ -118,18 +118,16 @@ const CreateAdminUserForm = () => {
               onChange={handleChange}
               required={true}
               disabled={creatingAdmin}
-              className=""
             />
             <InputBox
-              name="username"
-              id="username"
+              name="email"
+              id="email"
               type="text"
-              value={adminUserData.username}
-              placeholder="Username"
+              value={adminUserData.email}
+              placeholder="Email"
               onChange={handleChange}
               required={true}
               disabled={creatingAdmin}
-              className=""
             />
 
             <div className="relative">
@@ -142,7 +140,6 @@ const CreateAdminUserForm = () => {
                 onChange={handleChange}
                 required={true}
                 disabled={creatingAdmin}
-                className=""
               />
               <button
                 type="button"
