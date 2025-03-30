@@ -40,7 +40,7 @@ const CreateAdminUserForm = () => {
   const validateInput = () => {
     // check if the password contains at least 1 uppercase, 1 lowercase, 1 number, and 1 special character and must be at least 8 characters long
     const passwordRegex = new RegExp(
-      "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$"
+      "/^(?=.*[a-z])(?=.*[A-Z])(?=.*d)[a-zA-Zd]{8,}$/"
     );
 
     if (adminUserData.fullName.trim() === "") {

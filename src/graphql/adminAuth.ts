@@ -4,18 +4,17 @@ export const GET_ALL_ADMINS = gql`
   query GetAllAdmins {
     getAllAdmins {
       fullName
-      username
+      email
       isActive
     }
   }
 `;
 
 export const LOGIN_ADMIN = gql`
-  mutation LoginAdmin($username: String!, $password: String!) {
-    loginAdmin(username: $username, password: $password) {
+  mutation LoginAdmin($email: String!, $password: String!) {
+    loginAdmin(email: $email, password: $password) {
       success
       message
-      token
     }
   }
 `;
@@ -23,13 +22,13 @@ export const LOGIN_ADMIN = gql`
 export const CREATE_ADMIN = gql`
   mutation CreateAdmin(
     $fullName: String!
-    $username: String!
+    $email: String!
     $password: String!
     $isActive: Boolean!
   ) {
     createAdmin(
       fullName: $fullName
-      username: $username
+      email: $email
       password: $password
       isActive: $isActive
     ) {

@@ -4,14 +4,17 @@ import Button from "../components/general/Button";
 import { LOGIN_ADMIN } from "../graphql/adminAuth";
 import { Link, useNavigate } from "react-router";
 import { useMutation } from "@apollo/client";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "../constants";
+import { useAlert } from "../contexts/AlertContext";
 
 export default function Login() {
+  const { showAlert } = useAlert();
   const navigate = useNavigate();
-  const [loginAdminMutation, { loading }] = useMutation(LOGIN_ADMIN);
-  const [error, setError] = useState("");
+  const [loginAdminMutation, { loading: loadingLoginAdmin }] =
+    useMutation(LOGIN_ADMIN);
 
   const [loginData, setLoginData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
@@ -20,25 +23,55 @@ export default function Login() {
     setLoginData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateInput = () => {
+    if (!loginData.email) {
+      return "Please enter email";
+    }
+    if (!loginData.password) {
+      return "Please enter password";
+    }
+    if (!EMAIL_REGEX.test(loginData.email)) {
+      return "Invalid email or password";
+    }
+    if (!PASSWORD_REGEX.test(loginData.password)) {
+      return "Invalid email or password";
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setError("");
+
+    const validationResponse = validateInput();
+    if (validationResponse) {
+      showAlert({
+        type: "error",
+        message: validationResponse,
+      });
+      return;
+    }
+
     try {
       const response = await loginAdminMutation({
         variables: {
-          username: loginData.username,
+          email: loginData.email,
           password: loginData.password,
         },
       });
-      console.log(response);
-      const data = response.data;
+      const { data } = response;
+
+      showAlert({
+        type: data.loginAdmin.success ? "success" : "error",
+        message: data.loginAdmin.message,
+      });
       if (data.loginAdmin.success) {
         navigate("/admin");
       }
-      alert(data.loginAdmin.message);
     } catch (err) {
-      setError("An error occurred during login");
-      console.error(err);
+      showAlert({
+        type: "error",
+        message: "An error occurred while logging in",
+      });
     }
   };
 
@@ -51,24 +84,17 @@ export default function Login() {
             <h2 className="text-xs font-semibold">Login to your account </h2>
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 rounded-md">
-              {error}
-            </div>
-          )}
-
           <form>
             <div className="space-y-6">
               <InputBox
-                name="username"
-                id="username"
-                type="text"
-                value={loginData.username}
-                placeholder="Username"
+                name="email"
+                id="email"
+                type="email"
+                value={loginData.email}
+                placeholder="Email"
                 onChange={handleChange}
                 required={true}
-                disabled={loading}
-                className=""
+                disabled={loadingLoginAdmin}
               />
 
               <InputBox
@@ -79,8 +105,7 @@ export default function Login() {
                 placeholder="Password"
                 onChange={handleChange}
                 required={true}
-                disabled={loading}
-                className=""
+                disabled={loadingLoginAdmin}
               />
             </div>
 
@@ -102,8 +127,8 @@ export default function Login() {
             </div>
 
             <Button
-              text={loading ? "Signing in..." : "Login"}
-              disabled={loading}
+              text={loadingLoginAdmin ? "Loggin in..." : "Login"}
+              disabled={loadingLoginAdmin}
               onClick={handleSubmit}
             />
           </form>
