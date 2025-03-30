@@ -94,7 +94,7 @@ const ChangeAdminPasswordModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 z-[9999] backdrop-blur-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-lg">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
         <h2 className="text-2xl font-bold text-theme-gray mb-4">
           Change Admin Password
