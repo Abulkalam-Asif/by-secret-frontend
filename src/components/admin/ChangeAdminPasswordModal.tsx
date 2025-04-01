@@ -41,7 +41,7 @@ const ChangeAdminPasswordModal = ({
       return "Password is required";
     }
     if (!PASSWORD_REGEX.test(newPassword)) {
-      return "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character";
+      return "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character";
     }
     if (newPassword !== confirmPassword) {
       return "Passwords do not match";

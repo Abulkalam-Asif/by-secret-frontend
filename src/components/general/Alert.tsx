@@ -17,7 +17,7 @@ const Alert = ({ type, message }: AlertProps) => {
   return (
     <>
       <div
-        className={`mb-5 py-4 px-8 rounded-l shadow-md w-full mx-auto flex items-center gap-4 ${
+        className={`py-4 px-8 rounded-l shadow-md w-full max-w-2xl mx-auto flex items-center gap-4 ${
           isVisible ? "animate-enter" : "opacity-0"
         } ${
           type === "success"
@@ -35,7 +35,7 @@ const Alert = ({ type, message }: AlertProps) => {
         ) : type === "warning" ? (
           <FaExclamation className="text-2xl rounded-full p-1 border-2 border-yellow-600 text-yellow-600" />
         ) : null}
-        <div>{message}</div>
+        <p className="flex-1">{message}</p>
       </div>
     </>
   );

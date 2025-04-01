@@ -5,7 +5,7 @@ const AlertContainer = () => {
   const { alerts } = useAlert();
   return (
     <>
-      <div className="fixed top-0 right-0 z-50 flex flex-col items-end gap-3">
+      <div className="fixed top-0 right-0 z-[9999] flex flex-col items-end gap-3">
         {alerts.map((alert, index) => (
           <Alert key={index} type={alert.type} message={alert.message} />
         ))}
