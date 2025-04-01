@@ -8,3 +8,10 @@ export type AdminUserDisplayType = {
   email: string;
   isActive: boolean;
 };
+
+export type EmailTemplate = {
+  id: number;
+  name: string;
+  content: string;
+  active: boolean;
+};

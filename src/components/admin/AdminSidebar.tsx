@@ -8,6 +8,7 @@ import { MdPendingActions, MdOutlineApproval } from "react-icons/md";
 import { RiAdvertisementLine } from "react-icons/ri";
 import { GiPokerHand } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
+import { HiOutlineMail } from "react-icons/hi";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useMutation } from "@apollo/client";
 import { LOGOUT_ADMIN } from "../../graphql/adminAuth";
@@ -58,6 +59,11 @@ const AdminSidebar = ({
       name: "General Settings",
       href: "/admin/general-settings",
       icon: <FiSettings size={16} />,
+    },
+    {
+      name: "Email Templates",
+      href: "/admin/email-templates",
+      icon: <HiOutlineMail size={16} />,
     },
     {
       name: "Advertisers",

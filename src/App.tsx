@@ -12,6 +12,7 @@ import AdvRegister from "./routes/advertiser/advRegister/AdvRegister";
 import AdminRouletteSettings from "./routes/admin/AdminRouletteSettings";
 import AdminPendingCampaigns from "./routes/admin/AdminPendingCampaigns";
 import AdminApprovedCampaigns from "./routes/admin/AdminApprovedCampaigns";
+import AdminEmailTemplates from "./routes/admin/AdminEmailTemplates";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             path="approved-campaigns"
             element={<AdminApprovedCampaigns />}
           />
+          <Route path="email-templates" element={<AdminEmailTemplates />} />
         </Route>
       </Routes>
     </>
