@@ -8,7 +8,6 @@ import {
 } from "../../graphql/rouletteSettings";
 import { useAlert } from "../../contexts/AlertContext";
 import Loader from "../../components/general/Loader";
-import client from "../../apolloClient";
 
 interface RouletteSettingsData {
   costPerView: number;
