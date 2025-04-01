@@ -8,7 +8,6 @@ import {
 } from "../../graphql/adsSettings";
 import { useAlert } from "../../contexts/AlertContext";
 import Loader from "../../components/general/Loader";
-import client from "../../apolloClient";
 
 interface AdsSettingsData {
   costPerView: number;
@@ -33,7 +32,9 @@ const AdminAdsSettings = () => {
 
   // Update settings mutation
   const [updateAdsSettingsMutation, { loading: updatingSettings }] =
-    useMutation(UPDATE_ADS_SETTINGS);
+    useMutation(UPDATE_ADS_SETTINGS, {
+      refetchQueries: [GET_ADS_SETTINGS],
+    });
 
   // Load settings when data is available
   useEffect(() => {
@@ -90,9 +91,6 @@ const AdminAdsSettings = () => {
         message: response.data.updateAdsSettings.message,
         type: response.data.updateAdsSettings.success ? "success" : "error",
       });
-      if (response.data.updateAdsSettings.success) {
-        await client.refetchQueries({ include: [GET_ADS_SETTINGS] });
-      }
     } catch (err) {
       showAlert({
         message: "An error occurred while updating settings",

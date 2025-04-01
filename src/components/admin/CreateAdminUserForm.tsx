@@ -9,7 +9,6 @@ import { getStrengthColor } from "../../utils/passwordStrength/getStrengthColor"
 import { getStrengthLabel } from "../../utils/passwordStrength/getStrengthLabel";
 import { useAlert } from "../../contexts/AlertContext";
 import { CREATE_ADMIN, GET_ALL_ADMINS } from "../../graphql/adminAuth";
-import client from "../../apolloClient";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "../../constants";
 
 const defaultAdminUserData = {
@@ -22,8 +21,12 @@ const defaultAdminUserData = {
 const CreateAdminUserForm = () => {
   const { showAlert } = useAlert();
 
-  const [createAdminMutation, { loading: creatingAdmin }] =
-    useMutation(CREATE_ADMIN);
+  const [createAdminMutation, { loading: creatingAdmin }] = useMutation(
+    CREATE_ADMIN,
+    {
+      refetchQueries: [GET_ALL_ADMINS],
+    }
+  );
   const [showPassword, setShowPassword] = useState(false);
 
   const [adminUserData, setAdminUserData] = useState(defaultAdminUserData);
@@ -80,8 +83,6 @@ const CreateAdminUserForm = () => {
       });
       if (response.data.createAdmin.success) {
         setAdminUserData(defaultAdminUserData);
-        // Refetch the admin users data to include the newly created admin
-        await client.refetchQueries({ include: [GET_ALL_ADMINS] });
       }
       showAlert({
         message: response.data.createAdmin.message,

@@ -35,7 +35,9 @@ const AdminRouletteSettings = () => {
 
   // Update settings mutation
   const [updateRouletteSettingsMutation, { loading: updateLoading }] =
-    useMutation(UPDATE_ROULETTE_SETTINGS);
+    useMutation(UPDATE_ROULETTE_SETTINGS, {
+      refetchQueries: [GET_ROULETTE_SETTINGS],
+    });
 
   // Load settings when data is available
   useEffect(() => {
@@ -94,9 +96,6 @@ const AdminRouletteSettings = () => {
           ? "success"
           : "error",
       });
-      if (response.data.updateRouletteSettings.success) {
-        await client.refetchQueries({ include: [GET_ROULETTE_SETTINGS] });
-      }
     } catch (err) {
       showAlert({
         message: "An error occurred while updating settings",

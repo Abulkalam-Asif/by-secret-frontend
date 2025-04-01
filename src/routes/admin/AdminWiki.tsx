@@ -5,13 +5,16 @@ import Button from "../../components/general/Button";
 import JoditEditor from "jodit-react";
 import Loader from "../../components/general/Loader";
 import { useAlert } from "../../contexts/AlertContext";
-import client from "../../apolloClient";
 
 export default function AdminWiki() {
   const { showAlert } = useAlert();
   const { data: wikiData, loading: loadingWiki } = useQuery(GET_WIKI);
-  const [updateWikiMutation, { loading: loadingUpdateWiki }] =
-    useMutation(UPDATE_WIKI);
+  const [updateWikiMutation, { loading: loadingUpdateWiki }] = useMutation(
+    UPDATE_WIKI,
+    {
+      refetchQueries: [GET_WIKI],
+    }
+  );
 
   const editor = useRef(null);
   const [content, setContent] = useState("");
@@ -34,11 +37,6 @@ export default function AdminWiki() {
     const response = await updateWikiMutation({
       variables: { content },
     });
-    if (response.data?.updateWiki.success) {
-      await client.refetchQueries({
-        include: [GET_WIKI],
-      });
-    }
     showAlert({
       type: response.data?.updateWiki.success ? "success" : "error",
       message: response.data?.updateWiki.message,
