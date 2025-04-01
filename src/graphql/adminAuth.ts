@@ -63,3 +63,12 @@ export const CHANGE_ADMIN_PASSWORD = gql`
     }
   }
 `;
+
+export const LOGOUT_ADMIN = gql`
+  mutation LogoutAdmin {
+    logoutAdmin {
+      success
+      message
+    }
+  }
+`;

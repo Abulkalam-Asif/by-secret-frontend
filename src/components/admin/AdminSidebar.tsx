@@ -9,6 +9,9 @@ import { RiAdvertisementLine } from "react-icons/ri";
 import { GiPokerHand } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
+import { useMutation } from "@apollo/client";
+import { LOGOUT_ADMIN } from "../../graphql/adminAuth";
+import { useAlert } from "../../contexts/AlertContext";
 
 type AdminSidebarProps = {
   isSidebarCollapsed: boolean;
@@ -21,6 +24,13 @@ const AdminSidebar = ({
 }: AdminSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
+  const [logoutAdminMutation, { loading: loadingLogoutAdmin }] = useMutation(
+    LOGOUT_ADMIN,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
 
   const navItems = [
     {
@@ -66,8 +76,34 @@ const AdminSidebar = ({
     },
   ];
 
-  const logoutHandler = () => {
-    navigate("/login");
+  const logoutHandler = async () => {
+    try {
+      const response = await logoutAdminMutation();
+      const { data } = response;
+
+      if (data && data.logoutAdmin) {
+        showAlert({
+          type: data.logoutAdmin.success ? "success" : "error",
+          message: data.logoutAdmin.message || "Logged out successfully",
+        });
+
+        if (data.logoutAdmin.success) {
+          // Remove the isLoggedIn flag from localStorage
+          localStorage.removeItem("isLoggedIn");
+          // Redirect to login page
+          navigate("/login");
+        }
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
+      showAlert({
+        type: "error",
+        message: "An error occurred during logout",
+      });
+      // If there's an error, still try to logout
+      localStorage.removeItem("isLoggedIn");
+      navigate("/login");
+    }
   };
 
   return (
@@ -131,7 +167,10 @@ const AdminSidebar = ({
         <div className="px-4 py-3 border-t-2 border-theme-light-gray">
           <button
             onClick={logoutHandler}
-            className={`flex w-full cursor-pointer text-red-700 font-medium items-center p-3 rounded transition-colors duration-300 text-sm hover:bg-red-100`}>
+            disabled={loadingLogoutAdmin}
+            className={`flex w-full cursor-pointer text-red-700 font-medium items-center p-3 rounded transition-colors duration-300 text-sm hover:bg-red-100 ${
+              loadingLogoutAdmin ? "opacity-50 cursor-not-allowed" : ""
+            }`}>
             <span>
               <BiPowerOff size={16} />
             </span>
@@ -139,8 +178,8 @@ const AdminSidebar = ({
               className={`grid ${
                 isSidebarCollapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr] pl-3"
               } transition-grid-cols duration-300`}>
-              <div className={`overflow-hidden`}>
-                <span>Logout</span>
+              <div className={`overflow-hidden whitespace-nowrap`}>
+                <span>{loadingLogoutAdmin ? "Logging out..." : "Logout"}</span>
               </div>
             </div>
           </button>
