@@ -1,14 +1,23 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  GET_ADMIN_GENERAL_SETTINGS,
+  UPDATE_ADMIN_GENERAL_SETTINGS,
+} from "../../graphql/adminGeneralSettings";
 import InputBox from "../../components/general/InputBox";
 import ImageInput from "../../components/general/ImageInput";
 import JoditEditor from "jodit-react";
 import Button from "../../components/general/Button";
+import { useAlert } from "../../contexts/AlertContext";
+import Loader from "../../components/general/Loader";
+import { EMAIL_REGEX } from "../../constants";
 
 const defaultSettings = {
   companyName: "",
   logo: {
     file: null,
     base64: "",
+    url: "",
   },
   phone: "",
   email: "",
@@ -31,13 +40,88 @@ const defaultSettings = {
 };
 
 const AdminGeneralSettings = () => {
+  const { showAlert } = useAlert();
+  const { data, loading: loadingGetAdminGeneralSettings } = useQuery(
+    GET_ADMIN_GENERAL_SETTINGS
+  );
+  const [
+    updateAdminGeneralSettings,
+    { loading: loadingUpdateAdminGeneralSettings },
+  ] = useMutation(UPDATE_ADMIN_GENERAL_SETTINGS, {
+    refetchQueries: [GET_ADMIN_GENERAL_SETTINGS],
+  });
+
   const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    if (data?.getAdminGeneralSettings) {
+      setSettings((prev) => ({
+        ...prev,
+        ...data.getAdminGeneralSettings,
+        logo: {
+          file: null,
+          base64: data.getAdminGeneralSettings.logo || "",
+          url: data.getAdminGeneralSettings.logo || "",
+        },
+      }));
+      setTermsAndConditionsContent(
+        data.getAdminGeneralSettings.termsAndConditions || ""
+      );
+      setPrivacyPolicyContent(data.getAdminGeneralSettings.privacyPolicy || "");
+    }
+  }, [data]);
 
   const settingsInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSettings((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const validateEmail = () => {
+    if (settings.email && !EMAIL_REGEX.test(settings.email)) {
+      return "Invalid email format";
+    }
+    if (settings.smtpFromEmail && !EMAIL_REGEX.test(settings.smtpFromEmail)) {
+      return "Invalid SMTP From Email format";
+    }
+    return "";
+  };
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const emailError = validateEmail();
+    if (emailError) {
+      showAlert({
+        message: emailError,
+        type: "error",
+      });
+      return;
+    }
+
+    try {
+      const response = await updateAdminGeneralSettings({
+        variables: {
+          ...{
+            ...settings,
+            logo: settings.logo.base64,
+          },
+          termsAndConditions: termsAndConditionsContent,
+          privacyPolicy: privacyPolicyContent,
+        },
+      });
+      showAlert({
+        message: response.data.updateAdminGeneralSettings.message,
+        type: response.data.updateAdminGeneralSettings.success
+          ? "success"
+          : "error",
+      });
+    } catch (error) {
+      showAlert({
+        message: "An error occurred while saving settings.",
+        type: "error",
+      });
+    }
   };
 
   // Terms and Conditions WYSIWYG editor
@@ -71,12 +155,22 @@ const AdminGeneralSettings = () => {
                 type="text"
                 disabled={false}
               />
-              <ImageInput
-                label="Upload Logo"
-                value={settings.logo}
-                onChange={settingsInputHandler}
-                idHtmlFor="logo"
-              />
+              <div className="flex items-center justify-between gap-4">
+                <ImageInput
+                  label="Upload Logo"
+                  value={settings.logo}
+                  onChange={settingsInputHandler}
+                  idHtmlFor="logo"
+                  classNameOuter="w-full"
+                />
+                {(settings.logo.base64 || settings.logo.url) && (
+                  <img
+                    src={settings.logo.base64 || settings.logo.url}
+                    alt="Logo Preview"
+                    className="mt-2 h-20 w-20 object-contain rounded"
+                  />
+                )}
+              </div>
               <InputBox
                 value={settings.phone}
                 onChange={settingsInputHandler}
@@ -149,6 +243,9 @@ const AdminGeneralSettings = () => {
               <JoditEditor
                 ref={termsAndConditionsRef}
                 value={termsAndConditionsContent}
+                config={{
+                  placeholder: "Write your terms and conditions here...",
+                }}
                 tabIndex={1}
                 onBlur={(newContent: string) =>
                   setTermsAndConditionsContent(newContent)
@@ -167,6 +264,9 @@ const AdminGeneralSettings = () => {
                 ref={privacyPolicyRef}
                 value={privacyPolicyContent}
                 tabIndex={1}
+                config={{
+                  placeholder: "Write your privacy policy here...",
+                }}
                 onBlur={(newContent: string) =>
                   setPrivacyPolicyContent(newContent)
                 }
@@ -264,7 +364,7 @@ const AdminGeneralSettings = () => {
                 placeholder="SMTP From Email"
                 id="smtpFromEmail"
                 name="smtpFromEmail"
-                type="text"
+                type="email"
                 disabled={false}
               />
               <InputBox
@@ -279,14 +379,22 @@ const AdminGeneralSettings = () => {
             </div>
             <div className="mt-8">
               <Button
-                text="Save Settings"
-                onClick={() => console.log("Save Settings")}
-                disabled={false}
+                text={
+                  loadingUpdateAdminGeneralSettings
+                    ? "Saving..."
+                    : "Save Settings"
+                }
+                onClick={handleSave}
+                disabled={loadingUpdateAdminGeneralSettings}
               />
             </div>
           </form>
         </div>
       </section>
+      {loadingUpdateAdminGeneralSettings && (
+        <Loader text="Saving settings..." />
+      )}
+      {loadingGetAdminGeneralSettings && <Loader text="Loading..." />}
     </>
   );
 };

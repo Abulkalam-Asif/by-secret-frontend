@@ -8,6 +8,7 @@ type ImageInputProps = {
   idHtmlFor: string;
   disabled?: boolean;
   className?: string;
+  classNameOuter?: string;
 };
 
 const ImageInput = ({
@@ -17,6 +18,7 @@ const ImageInput = ({
   onChange,
   disabled = false,
   className = "",
+  classNameOuter = "",
 }: ImageInputProps) => {
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,7 +39,7 @@ const ImageInput = ({
 
   return (
     <>
-      <div className="flex">
+      <div className={`flex ${classNameOuter}`}>
         <input
           id={idHtmlFor}
           type="file"
@@ -54,7 +56,9 @@ const ImageInput = ({
           } ${className}`}>
           {value.file ? (
             <span className="whitespace-nowrap text-ellipsis overflow-hidden">
-              {value.file?.name}
+              {value.file?.name.length > 20
+                ? `${value.file?.name.slice(0, 20)}...`
+                : value.file?.name}
             </span>
           ) : (
             <span className="text-[#939da7]">{label}</span>
