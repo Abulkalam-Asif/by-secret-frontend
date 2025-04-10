@@ -3,12 +3,10 @@
 import { BiPowerOff } from "react-icons/bi";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { AiOutlineDashboard } from "react-icons/ai";
-import { BiBook, BiUser } from "react-icons/bi";
-import { MdPendingActions, MdOutlineApproval } from "react-icons/md";
+import { BiBook } from "react-icons/bi";
 import { RiAdvertisementLine } from "react-icons/ri";
 import { GiPokerHand } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
-import { HiOutlineMail } from "react-icons/hi";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useMutation } from "@apollo/client";
 import { LOGOUT_ADMIN } from "../../graphql/adminAuth";

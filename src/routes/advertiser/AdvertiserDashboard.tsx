@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import { useState } from "react";
 import Button from "../../components/general/Button";
+import { Payload } from "recharts/types/component/DefaultLegendContent";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -29,8 +30,20 @@ interface ChartCardProps {
   donut?: boolean;
 }
 
+// Define type for tooltip props
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: {
+      percent: number;
+    };
+  }>;
+}
+
 // Custom tooltip formatter
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: TooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 shadow-md rounded-md border border-gray-100">
@@ -61,15 +74,15 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
     percent: item.value / total,
   }));
 
-  const [opacity, setOpacity] = useState(
-    data.reduce((acc, item) => ({ ...acc, [item.name]: 1 }), {})
-  );
+  const [opacity, setOpacity] = useState<
+    Record<string, string | number | undefined>
+  >(data.reduce((acc, item) => ({ ...acc, [item.name]: 1 }), {}));
 
-  const handleLegendMouseEnter = (data: any) => {
+  const handleLegendMouseEnter = (data: Payload) => {
     const { value } = data;
     setOpacity((op) => ({ ...op, [value]: 0.5 }));
   };
-  const handleLegendMouseLeave = (data: any) => {
+  const handleLegendMouseLeave = (data: Payload) => {
     const { value } = data;
     setOpacity((op) => ({ ...op, [value]: 1 }));
   };

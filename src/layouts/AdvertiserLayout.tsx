@@ -1,17 +1,17 @@
-import { useState, useEffect, useRef } from "react";
-import { Outlet, useNavigate } from "react-router";
-import useAuthorizeAdmin from "../hooks/admin/useAuthorizeAdmin";
-import Loader from "../components/general/Loader";
-import { useAdmin } from "../contexts/AdminContext";
+import { useState } from "react";
+import { Outlet } from "react-router";
+// import useAuthorizeAdmin from "../hooks/admin/useAuthorizeAdmin";
+// import Loader from "../components/general/Loader";
+// import { useAdmin } from "../contexts/AdminContext";
 import AdvertiserSidebar from "../components/advertiser/AdvertiserSidebar";
 
 const AdvertiserLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const { authorizeAdmin, loadingAuthorizeAdmin } = useAuthorizeAdmin();
-  const navigate = useNavigate();
-  const authCheckPerformed = useRef(false);
-  const { setEmail } = useAdmin();
+  // const [isAuthorized, setIsAuthorized] = useState(false);
+  // const { authorizeAdmin, loadingAuthorizeAdmin } = useAuthorizeAdmin();
+  // const navigate = useNavigate();
+  // const authCheckPerformed = useRef(false);
+  // const { setEmail } = useAdmin();
 
   // Initial authorization
   // useEffect(() => {
