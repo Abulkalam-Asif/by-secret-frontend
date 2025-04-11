@@ -1,7 +1,7 @@
 import { useState } from "react";
 import InputBox from "../../components/general/InputBox";
 import Button from "../../components/general/Button";
-import { LOGIN_ADVERTISER } from "../../graphql/advertiser";
+import { LOGIN_ADVERTISER } from "../../graphql/advertiserAuth";
 import { useMutation } from "@apollo/client";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "../../constants";
 import { useAlert } from "../../contexts/AlertContext";

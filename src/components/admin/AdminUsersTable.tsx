@@ -4,7 +4,7 @@ import { FaCheck } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import { MdChangeCircle, MdOutlinePassword } from "react-icons/md";
 import IconButton from "../general/IconButton";
-import { useAdmin } from "../../contexts/AdminContext";
+import { useUser } from "../../contexts/UserContext";
 import {
   ApolloCache,
   DefaultContext,
@@ -38,7 +38,7 @@ function AdminUsersTable({
   changeAdminStatusMutation,
 }: AdminUsersTableProps) {
   const { showAlert } = useAlert();
-  const { email: adminEmail } = useAdmin();
+  const { email: adminEmail } = useUser();
   const isPseudoSuperAdminLoggedIn = adminEmail === "admin@admin.com";
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [selectedAdminEmail, setSelectedAdminEmail] = useState("");

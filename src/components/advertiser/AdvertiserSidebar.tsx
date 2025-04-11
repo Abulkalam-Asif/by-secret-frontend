@@ -9,8 +9,8 @@ import { GiPokerHand } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useMutation } from "@apollo/client";
-import { LOGOUT_ADMIN } from "../../graphql/adminAuth";
 import { useAlert } from "../../contexts/AlertContext";
+import { LOGOUT_ADVERTISER } from "../../graphql/advertiserAuth";
 
 type AdvertiserSidebarProps = {
   isSidebarCollapsed: boolean;
@@ -24,12 +24,10 @@ const AdvertiserSidebar = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { showAlert } = useAlert();
-  const [logoutAdminMutation, { loading: loadingLogoutAdmin }] = useMutation(
-    LOGOUT_ADMIN,
-    {
+  const [logoutAdvertiserMutation, { loading: loadingLogoutAdvertiser }] =
+    useMutation(LOGOUT_ADVERTISER, {
       fetchPolicy: "no-cache",
-    }
-  );
+    });
 
   const navItems = [
     {
@@ -61,20 +59,18 @@ const AdvertiserSidebar = ({
 
   const logoutHandler = async () => {
     try {
-      const response = await logoutAdminMutation();
+      const response = await logoutAdvertiserMutation();
       const { data } = response;
 
-      if (data && data.logoutAdmin) {
+      if (data && data.logoutAdvertiser) {
         showAlert({
-          type: data.logoutAdmin.success ? "success" : "error",
-          message: data.logoutAdmin.message || "Logged out successfully",
+          type: data.logoutAdvertiser.success ? "success" : "error",
+          message: data.logoutAdvertiser.message || "Logged out successfully",
         });
 
-        if (data.logoutAdmin.success) {
-          // Remove the isLoggedIn flag from localStorage
-          localStorage.removeItem("isLoggedIn");
+        if (data.logoutAdvertiser.success) {
           // Redirect to login page
-          navigate("/login");
+          navigate("/advertiser-login");
         }
       }
     } catch (err) {
@@ -84,8 +80,7 @@ const AdvertiserSidebar = ({
         message: "An error occurred during logout",
       });
       // If there's an error, still try to logout
-      localStorage.removeItem("isLoggedIn");
-      navigate("/login");
+      navigate("/advertiser-login");
     }
   };
 
@@ -150,9 +145,9 @@ const AdvertiserSidebar = ({
         <div className="px-4 py-3 border-t-2 border-theme-light-gray">
           <button
             onClick={logoutHandler}
-            disabled={loadingLogoutAdmin}
+            disabled={loadingLogoutAdvertiser}
             className={`flex w-full cursor-pointer text-red-700 font-medium items-center p-3 rounded transition-colors duration-300 text-sm hover:bg-red-100 ${
-              loadingLogoutAdmin ? "opacity-50 cursor-not-allowed" : ""
+              loadingLogoutAdvertiser ? "opacity-50 cursor-not-allowed" : ""
             }`}>
             <span>
               <BiPowerOff size={16} />
@@ -162,7 +157,9 @@ const AdvertiserSidebar = ({
                 isSidebarCollapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr] pl-3"
               } transition-grid-cols duration-300`}>
               <div className={`overflow-hidden whitespace-nowrap`}>
-                <span>{loadingLogoutAdmin ? "Logging out..." : "Logout"}</span>
+                <span>
+                  {loadingLogoutAdvertiser ? "Logging out..." : "Logout"}
+                </span>
               </div>
             </div>
           </button>

@@ -9,7 +9,7 @@ import {
 import Button from "../../components/general/Button";
 import { useState } from "react";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
-import { useAdmin } from "../../contexts/AdminContext";
+import { useUser } from "../../contexts/UserContext";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -153,7 +153,7 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
 };
 
 const AdminDashboard = () => {
-  const { email } = useAdmin();
+  const { email } = useUser();
   const dashboardData = {
     totalAdvertisers: 125,
     activeAdvertisers: 98,

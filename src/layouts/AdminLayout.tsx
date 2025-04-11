@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import useAuthorizeAdmin from "../hooks/admin/useAuthorizeAdmin";
 import Loader from "../components/general/Loader";
-import { useAdmin } from "../contexts/AdminContext";
+import { useUser } from "../contexts/UserContext";
 
 const AdminLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -11,7 +11,7 @@ const AdminLayout = () => {
   const { authorizeAdmin, loadingAuthorizeAdmin } = useAuthorizeAdmin();
   const navigate = useNavigate();
   const authCheckPerformed = useRef(false);
-  const { setEmail } = useAdmin();
+  const { setEmail } = useUser();
 
   // Initial authorization
   useEffect(() => {

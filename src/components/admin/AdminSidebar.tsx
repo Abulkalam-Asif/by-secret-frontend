@@ -94,8 +94,6 @@ const AdminSidebar = ({
         });
 
         if (data.logoutAdmin.success) {
-          // Remove the isLoggedIn flag from localStorage
-          localStorage.removeItem("isLoggedIn");
           // Redirect to login page
           navigate("/login");
         }
@@ -107,7 +105,6 @@ const AdminSidebar = ({
         message: "An error occurred during logout",
       });
       // If there's an error, still try to logout
-      localStorage.removeItem("isLoggedIn");
       navigate("/login");
     }
   };

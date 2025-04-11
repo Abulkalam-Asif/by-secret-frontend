@@ -65,8 +65,6 @@ export default function Login() {
         message: data.loginAdmin.message,
       });
       if (data.loginAdmin.success) {
-        // Cookie is automatically stored by the browser
-        localStorage.setItem("isLoggedIn", "true");
         navigate("/admin");
       }
     } catch (err) {

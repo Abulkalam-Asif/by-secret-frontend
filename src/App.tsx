@@ -23,8 +23,10 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+
         <Route path="advertiser-login" element={<AdvertiserLogin />} />
         <Route path="advertiser-register" element={<AdvRegister />} />
+
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="wiki" element={<AdminWiki />} />

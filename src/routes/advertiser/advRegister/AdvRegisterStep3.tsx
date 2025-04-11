@@ -5,7 +5,7 @@ import { calculatePasswordStrength } from "../../../utils/passwordStrength/calcu
 import { getStrengthColor } from "../../../utils/passwordStrength/getStrengthColor";
 import { getStrengthLabel } from "../../../utils/passwordStrength/getStrengthLabel";
 import { useMutation } from "@apollo/client";
-import { SUBMIT_ADVERTISER_STEP3 } from "../../../graphql/advertiser";
+import { SUBMIT_ADVERTISER_STEP3 } from "../../../graphql/advertiserAuth";
 import { useNavigate, useLocation } from "react-router";
 import ImageInput from "../../../components/general/ImageInput";
 import { useAlert } from "../../../contexts/AlertContext";

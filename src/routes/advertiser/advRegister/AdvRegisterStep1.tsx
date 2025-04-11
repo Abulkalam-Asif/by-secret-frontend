@@ -2,7 +2,7 @@ import { useState } from "react";
 import InputBox from "../../../components/general/InputBox";
 import Button from "../../../components/general/Button";
 import { useMutation } from "@apollo/client";
-import { SUBMIT_ADVERTISER_STEP1 } from "../../../graphql/advertiser";
+import { SUBMIT_ADVERTISER_STEP1 } from "../../../graphql/advertiserAuth";
 import { useAlert } from "../../../contexts/AlertContext";
 
 const defaultRegisterData = {

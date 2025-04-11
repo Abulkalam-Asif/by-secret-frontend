@@ -1,5 +1,13 @@
 import { gql } from "@apollo/client";
 
+export const AUTHORIZE_ADVERTISER = gql`
+  query AuthorizeAdvertiser {
+    authorizeAdvertiser {
+      email
+    }
+  }
+`;
+
 export const SUBMIT_ADVERTISER_STEP1 = gql`
   mutation SubmitAdvertiserStep1(
     $companyName: String!
@@ -41,6 +49,15 @@ export const SUBMIT_ADVERTISER_STEP3 = gql`
 export const LOGIN_ADVERTISER = gql`
   mutation LoginAdvertiser($email: String!, $password: String!) {
     loginAdvertiser(email: $email, password: $password) {
+      success
+      message
+    }
+  }
+`;
+
+export const LOGOUT_ADVERTISER = gql`
+  mutation LogoutAdvertiser {
+    logoutAdvertiser {
       success
       message
     }

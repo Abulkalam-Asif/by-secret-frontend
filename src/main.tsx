@@ -7,18 +7,18 @@ import { ApolloProvider } from "@apollo/client";
 import client from "./apolloClient.ts";
 import { AlertProvider } from "./contexts/AlertContext.tsx";
 import AlertContainer from "./components/general/AlertContainer.tsx";
-import { AdminProvider } from "./contexts/AdminContext.tsx";
+import { UserProvider } from "./contexts/UserContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
       <BrowserRouter>
-        <AdminProvider>
+        <UserProvider>
           <AlertProvider>
             <App />
             <AlertContainer />
           </AlertProvider>
-        </AdminProvider>
+        </UserProvider>
       </BrowserRouter>
     </ApolloProvider>
   </StrictMode>
