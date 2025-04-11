@@ -15,6 +15,7 @@ import AdminApprovedCampaigns from "./routes/admin/AdminApprovedCampaigns";
 import AdminEmailTemplates from "./routes/admin/AdminEmailTemplates";
 import AdvertiserDashboard from "./routes/advertiser/AdvertiserDashboard";
 import AdvertiserLayout from "./layouts/AdvertiserLayout";
+import AdvertiserLogin from "./routes/advertiser/AdvertiserLogin";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="advertiser-login" element={<AdvertiserLogin />} />
         <Route path="advertiser-register" element={<AdvRegister />} />
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />

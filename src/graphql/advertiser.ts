@@ -37,3 +37,12 @@ export const SUBMIT_ADVERTISER_STEP3 = gql`
     }
   }
 `;
+
+export const LOGIN_ADVERTISER = gql`
+  mutation LoginAdvertiser($email: String!, $password: String!) {
+    loginAdvertiser(email: $email, password: $password) {
+      success
+      message
+    }
+  }
+`;
