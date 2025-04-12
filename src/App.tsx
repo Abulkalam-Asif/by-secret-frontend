@@ -17,6 +17,7 @@ import AdvertiserDashboard from "./routes/advertiser/AdvertiserDashboard";
 import AdvertiserLayout from "./layouts/AdvertiserLayout";
 import AdvertiserLogin from "./routes/advertiser/AdvertiserLogin";
 import AdminRejectedCampaigns from "./routes/admin/AdminRejectedCampaigns";
+import AdvAdsCampaigns from "./routes/advertiser/AdvAdsCampaigns";
 
 function App() {
   return (
@@ -50,6 +51,10 @@ function App() {
 
         <Route path="advertiser" element={<AdvertiserLayout />}>
           <Route index element={<AdvertiserDashboard />} />
+          <Route
+            path="/advertiser/ads-campaigns"
+            element={<AdvAdsCampaigns />}
+          />
         </Route>
       </Routes>
     </>
