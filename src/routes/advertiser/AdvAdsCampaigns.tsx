@@ -93,7 +93,7 @@ const AdvAdsCampaigns = () => {
           <div className="mb-8 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-theme-gray">
-                Advertiser Campaigns
+                Ads Campaigns
               </h1>
               <p className="text-sm text-gray-500 mt-2">
                 Manage your advertising campaigns
