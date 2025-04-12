@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 
-type ButtonProps = {
+type IconButtonProps = {
   icon: ReactNode;
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
@@ -9,14 +9,14 @@ type ButtonProps = {
   title?: string;
 };
 
-const Button = ({
+const IconButton = ({
   onClick,
   icon,
   disabled = false,
   type = "button",
   className = "",
   title = "",
-}: ButtonProps) => {
+}: IconButtonProps) => {
   return (
     <>
       <button
@@ -33,4 +33,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default IconButton;

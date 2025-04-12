@@ -4,7 +4,7 @@ import { BiPowerOff } from "react-icons/bi";
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { BiBook, BiUser } from "react-icons/bi";
-import { MdPendingActions, MdOutlineApproval } from "react-icons/md";
+import { MdPendingActions, MdOutlineApproval, MdCancel } from "react-icons/md";
 import { RiAdvertisementLine } from "react-icons/ri";
 import { GiPokerHand } from "react-icons/gi";
 import { FiSettings } from "react-icons/fi";
@@ -68,7 +68,12 @@ const AdminSidebar = ({
     {
       name: "Advertisers",
       href: "/admin/advertisers",
-      icon: <RiAdvertisementLine size={16} />,
+      icon: <BiUser size={16} />,
+    },
+    {
+      name: "Approved Campaigns",
+      href: "/admin/approved-campaigns",
+      icon: <MdOutlineApproval size={16} />,
     },
     {
       name: "Pending Campaigns",
@@ -76,9 +81,9 @@ const AdminSidebar = ({
       icon: <MdPendingActions size={16} />,
     },
     {
-      name: "Approved Campaigns",
-      href: "/admin/approved-campaigns",
-      icon: <MdOutlineApproval size={16} />,
+      name: "Rejected Campaigns",
+      href: "/admin/rejected-campaigns",
+      icon: <MdCancel size={16} />,
     },
   ];
 

@@ -16,6 +16,7 @@ import AdminEmailTemplates from "./routes/admin/AdminEmailTemplates";
 import AdvertiserDashboard from "./routes/advertiser/AdvertiserDashboard";
 import AdvertiserLayout from "./layouts/AdvertiserLayout";
 import AdvertiserLogin from "./routes/advertiser/AdvertiserLogin";
+import AdminRejectedCampaigns from "./routes/admin/AdminRejectedCampaigns";
 
 function App() {
   return (
@@ -34,13 +35,17 @@ function App() {
           <Route path="ads-settings" element={<AdminAdsSettings />} />
           <Route path="roulette-settings" element={<AdminRouletteSettings />} />
           <Route path="general-settings" element={<AdminGeneralSettings />} />
+          <Route path="email-templates" element={<AdminEmailTemplates />} />
           <Route path="advertisers" element={<AdminAdvertisers />} />
-          <Route path="pending-campaigns" element={<AdminPendingCampaigns />} />
           <Route
             path="approved-campaigns"
             element={<AdminApprovedCampaigns />}
           />
-          <Route path="email-templates" element={<AdminEmailTemplates />} />
+          <Route path="pending-campaigns" element={<AdminPendingCampaigns />} />
+          <Route
+            path="rejected-campaigns"
+            element={<AdminRejectedCampaigns />}
+          />
         </Route>
 
         <Route path="advertiser" element={<AdvertiserLayout />}>

@@ -1,6 +1,23 @@
+import { useState } from "react";
 import Button from "../../components/general/Button";
 import Th from "../../components/general/Th";
 import Td from "../../components/general/Td";
+import Modal from "../../components/general/Modal.tsx"; // Assuming a Modal component exists
+
+type PendingCampaign = {
+  id: number;
+  advertiser: string;
+  dateRequested: string;
+  days: number;
+  startDate: string;
+  type: string;
+  budget: string;
+  media: string;
+  action: string;
+  urlOrPhone: string;
+  prizes: string;
+  status: string;
+};
 
 const samplePendingCampaigns = [
   {
@@ -48,6 +65,25 @@ const samplePendingCampaigns = [
 ];
 
 const AdminPendingCampaigns = () => {
+  const [selectedCampaign, setSelectedCampaign] =
+    useState<PendingCampaign | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewCampaign = (campaign: PendingCampaign) => {
+    setSelectedCampaign(campaign);
+    setIsModalOpen(true);
+  };
+
+  const handleApprove = () => {
+    // Logic to approve the campaign
+    setIsModalOpen(false);
+  };
+
+  const handleReject = () => {
+    // Logic to reject the campaign
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <section>
@@ -80,6 +116,7 @@ const AdminPendingCampaigns = () => {
                   <Th>URL or Phone</Th>
                   <Th>Prizes</Th>
                   <Th>Status</Th>
+                  <Th>Action</Th>
                 </tr>
               </thead>
               <tbody>
@@ -110,6 +147,13 @@ const AdminPendingCampaigns = () => {
                           campaign.status.slice(1)}
                       </span>
                     </Td>
+                    <Td>
+                      <Button
+                        text="View"
+                        onClick={() => handleViewCampaign(campaign)}
+                        className="bg-blue-500 text-white rounded px-4 py-2"
+                      />
+                    </Td>
                   </tr>
                 ))}
               </tbody>
@@ -117,6 +161,51 @@ const AdminPendingCampaigns = () => {
           </div>
         </div>
       </section>
+
+      {isModalOpen && selectedCampaign && (
+        <Modal closeModal={() => setIsModalOpen(false)}>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Campaign Details</h2>
+            <p>
+              <strong>Advertiser:</strong> {selectedCampaign.advertiser}
+            </p>
+            <p>
+              <strong>Date Requested:</strong> {selectedCampaign.dateRequested}
+            </p>
+            <p>
+              <strong>Days:</strong> {selectedCampaign.days}
+            </p>
+            <p>
+              <strong>Start Date:</strong> {selectedCampaign.startDate}
+            </p>
+            <p>
+              <strong>Type:</strong> {selectedCampaign.type}
+            </p>
+            <p>
+              <strong>Budget:</strong> {selectedCampaign.budget}
+            </p>
+            <p>
+              <strong>Media:</strong> {selectedCampaign.media}
+            </p>
+            <p>
+              <strong>Action:</strong> {selectedCampaign.action}
+            </p>
+            <p>
+              <strong>URL or Phone:</strong> {selectedCampaign.urlOrPhone}
+            </p>
+            <p>
+              <strong>Prizes:</strong> {selectedCampaign.prizes || "N/A"}
+            </p>
+            <p>
+              <strong>Status:</strong> {selectedCampaign.status}
+            </p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button text="Approve" onClick={handleApprove} />
+              <Button text="Reject" onClick={handleReject} />
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
