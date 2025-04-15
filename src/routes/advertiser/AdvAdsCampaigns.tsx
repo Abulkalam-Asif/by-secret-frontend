@@ -63,11 +63,24 @@ const AdvAdsCampaigns = () => {
     setIsModalOpen(true);
   };
 
+  const handleEditCampaign = (campaign: Campaign) => {
+    setNewCampaign(campaign);
+    setIsModalOpen(true);
+  };
+
   const handleSubmitCampaign = () => {
-    setCampaigns((prev: Campaign[]) => [
-      ...prev,
-      { ...newCampaign, status: "pending", id: Date.now() },
-    ]);
+    setCampaigns((prev: Campaign[]) => {
+      const existingIndex = prev.findIndex((c) => c.id === newCampaign.id);
+      if (existingIndex !== -1) {
+        // Update existing campaign
+        const updatedCampaigns = [...prev];
+        updatedCampaigns[existingIndex] = { ...newCampaign };
+        return updatedCampaigns;
+      }
+      // Add new campaign
+      return [...prev, { ...newCampaign, status: "pending", id: Date.now() }];
+    });
+
     setNewCampaign({
       id: 0,
       name: "",
@@ -113,6 +126,7 @@ const AdvAdsCampaigns = () => {
                   <Th>Date Range</Th>
                   <Th>Budget</Th>
                   <Th>Status</Th>
+                  <Th>Actions</Th>
                 </tr>
               </thead>
               <tbody>
@@ -150,6 +164,12 @@ const AdvAdsCampaigns = () => {
                           campaign.status.slice(1)}
                       </span>
                     </Td>
+                    <Td>
+                      <Button
+                        text="Edit"
+                        onClick={() => handleEditCampaign(campaign)}
+                      />
+                    </Td>
                   </tr>
                 ))}
               </tbody>
@@ -161,7 +181,9 @@ const AdvAdsCampaigns = () => {
       {isModalOpen && (
         <Modal closeModal={() => setIsModalOpen(false)}>
           <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">Add New Campaign</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {newCampaign.id ? "Edit Campaign" : "Add New Campaign"}
+            </h2>
             <div className="mb-4">
               <InputBox
                 name="campaignName"
