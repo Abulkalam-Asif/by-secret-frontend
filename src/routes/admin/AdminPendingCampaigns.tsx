@@ -68,10 +68,14 @@ const AdminPendingCampaigns = () => {
   const [selectedCampaign, setSelectedCampaign] =
     useState<PendingCampaign | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showRejectionNotes, setShowRejectionNotes] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   const handleViewCampaign = (campaign: PendingCampaign) => {
     setSelectedCampaign(campaign);
     setIsModalOpen(true);
+    setShowRejectionNotes(false);
+    setRejectionReason("");
   };
 
   const handleApprove = () => {
@@ -80,8 +84,21 @@ const AdminPendingCampaigns = () => {
   };
 
   const handleReject = () => {
-    // Logic to reject the campaign
+    // Show rejection notes field
+    setShowRejectionNotes(true);
+  };
+
+  const handleSubmitRejection = () => {
+    // Logic to reject the campaign with reason
+    console.log(`Campaign rejected with reason: ${rejectionReason}`);
     setIsModalOpen(false);
+    setShowRejectionNotes(false);
+    setRejectionReason("");
+  };
+
+  const handleCancelRejection = () => {
+    setShowRejectionNotes(false);
+    setRejectionReason("");
   };
 
   return (
@@ -199,10 +216,25 @@ const AdminPendingCampaigns = () => {
             <p>
               <strong>Status:</strong> {selectedCampaign.status}
             </p>
-            <div className="mt-4 flex justify-end gap-2">
-              <Button text="Approve" onClick={handleApprove} />
-              <Button text="Reject" onClick={handleReject} />
-            </div>
+            {showRejectionNotes ? (
+              <div className="mt-4">
+                <textarea
+                  className="border rounded p-2 w-full"
+                  placeholder="Enter rejection reason"
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                />
+                <div className="mt-2 flex justify-end gap-2">
+                  <Button text="Submit" onClick={handleSubmitRejection} />
+                  <Button text="Cancel" onClick={handleCancelRejection} />
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 flex justify-end gap-2">
+                <Button text="Approve" onClick={handleApprove} />
+                <Button text="Reject" onClick={handleReject} />
+              </div>
+            )}
           </div>
         </Modal>
       )}
