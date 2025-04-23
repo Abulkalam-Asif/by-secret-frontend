@@ -1,5 +1,20 @@
+import { useState } from "react";
+import Button from "../../components/general/Button";
 import Th from "../../components/general/Th";
 import Td from "../../components/general/Td";
+import Modal from "../../components/general/Modal";
+
+type ApprovedCampaign = {
+  id: number;
+  advertiser: string;
+  dateCreated: string;
+  fromDate: string;
+  toDate: string;
+  type: string;
+  budget: string;
+  details: string;
+  status: string;
+};
 
 const sampleApprovedCampaigns = [
   {
@@ -60,6 +75,15 @@ const sampleApprovedCampaigns = [
 ];
 
 const AdminApprovedCampaigns = () => {
+  const [selectedCampaign, setSelectedCampaign] =
+    useState<ApprovedCampaign | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewCampaign = (campaign: ApprovedCampaign) => {
+    setSelectedCampaign(campaign);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <section>
@@ -84,6 +108,7 @@ const AdminApprovedCampaigns = () => {
                   <Th>Budget</Th>
                   <Th>Details</Th>
                   <Th>Status</Th>
+                  <Th>Action</Th>
                 </tr>
               </thead>
               <tbody>
@@ -111,6 +136,13 @@ const AdminApprovedCampaigns = () => {
                           campaign.status.slice(1)}
                       </span>
                     </Td>
+                    <Td>
+                      <Button
+                        text="View"
+                        onClick={() => handleViewCampaign(campaign)}
+                        className="bg-blue-500 text-white rounded px-4 py-2"
+                      />
+                    </Td>
                   </tr>
                 ))}
               </tbody>
@@ -118,6 +150,43 @@ const AdminApprovedCampaigns = () => {
           </div>
         </div>
       </section>
+
+      {isModalOpen && selectedCampaign && (
+        <Modal closeModal={() => setIsModalOpen(false)}>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Campaign Details</h2>
+            <p>
+              <strong>Advertiser:</strong> {selectedCampaign.advertiser}
+            </p>
+            <p>
+              <strong>Date Created:</strong> {selectedCampaign.dateCreated}
+            </p>
+            <p>
+              <strong>From Date:</strong> {selectedCampaign.fromDate}
+            </p>
+            <p>
+              <strong>To Date:</strong> {selectedCampaign.toDate}
+            </p>
+            <p>
+              <strong>Type:</strong> {selectedCampaign.type}
+            </p>
+            <p>
+              <strong>Budget:</strong> {selectedCampaign.budget}
+            </p>
+            <p>
+              <strong>Details:</strong> {selectedCampaign.details}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {selectedCampaign.status.charAt(0).toUpperCase() +
+                selectedCampaign.status.slice(1)}
+            </p>
+            <div className="mt-4 flex justify-end">
+              <Button text="Close" onClick={() => setIsModalOpen(false)} />
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
