@@ -1,7 +1,27 @@
 import Th from "../../components/general/Th.tsx";
 import Td from "../../components/general/Td.tsx";
+import { useState } from "react";
+import Button from "../../components/general/Button";
+import Modal from "../../components/general/Modal";
 
-const sampleRejectedCampaigns = [
+// Define rejected campaign type with rejectionNote
+type RejectedCampaign = {
+  id: number;
+  advertiser: string;
+  dateRequested: string;
+  days: number;
+  startDate: string;
+  type: string;
+  budget: string;
+  media: string;
+  action: string;
+  urlOrPhone: string;
+  prizes: string;
+  status: string;
+  rejectionNote: string;
+};
+
+const sampleRejectedCampaigns: RejectedCampaign[] = [
   {
     id: 1,
     advertiser: "ABC Company",
@@ -15,6 +35,7 @@ const sampleRejectedCampaigns = [
     urlOrPhone: "https://example.com",
     prizes: "",
     status: "rejected",
+    rejectionNote: "Insufficient budget details provided.",
   },
   {
     id: 2,
@@ -29,6 +50,7 @@ const sampleRejectedCampaigns = [
     urlOrPhone: "+1 555-123-4567",
     prizes: "Gift cards, Electronics, Cash",
     status: "rejected",
+    rejectionNote: "Promotion rules not met.",
   },
   {
     id: 3,
@@ -43,10 +65,20 @@ const sampleRejectedCampaigns = [
     urlOrPhone: "https://123industries.com",
     prizes: "",
     status: "rejected",
+    rejectionNote: "Media assets missing.",
   },
 ];
 
 const AdminRejectedCampaigns = () => {
+  const [selectedCampaign, setSelectedCampaign] =
+    useState<RejectedCampaign | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewCampaign = (campaign: RejectedCampaign) => {
+    setSelectedCampaign(campaign);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <section>
@@ -76,6 +108,7 @@ const AdminRejectedCampaigns = () => {
                   <Th>URL or Phone</Th>
                   <Th>Prizes</Th>
                   <Th>Status</Th>
+                  <Th>Action</Th>
                 </tr>
               </thead>
               <tbody>
@@ -100,6 +133,13 @@ const AdminRejectedCampaigns = () => {
                           campaign.status.slice(1)}
                       </span>
                     </Td>
+                    <Td>
+                      <Button
+                        text="View"
+                        onClick={() => handleViewCampaign(campaign)}
+                        className="bg-blue-500 text-white rounded px-4 py-2"
+                      />
+                    </Td>
                   </tr>
                 ))}
               </tbody>
@@ -107,6 +147,50 @@ const AdminRejectedCampaigns = () => {
           </div>
         </div>
       </section>
+
+      {isModalOpen && selectedCampaign && (
+        <Modal closeModal={() => setIsModalOpen(false)}>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Campaign Details</h2>
+            <p>
+              <strong>Advertiser:</strong> {selectedCampaign.advertiser}
+            </p>
+            <p>
+              <strong>Date Requested:</strong> {selectedCampaign.dateRequested}
+            </p>
+            <p>
+              <strong>Days:</strong> {selectedCampaign.days}
+            </p>
+            <p>
+              <strong>Start Date:</strong> {selectedCampaign.startDate}
+            </p>
+            <p>
+              <strong>Type:</strong> {selectedCampaign.type}
+            </p>
+            <p>
+              <strong>Budget:</strong> {selectedCampaign.budget}
+            </p>
+            <p>
+              <strong>Media:</strong> {selectedCampaign.media}
+            </p>
+            <p>
+              <strong>Action:</strong> {selectedCampaign.action}
+            </p>
+            <p>
+              <strong>URL or Phone:</strong> {selectedCampaign.urlOrPhone}
+            </p>
+            <p>
+              <strong>Prizes:</strong> {selectedCampaign.prizes || "N/A"}
+            </p>
+            <p>
+              <strong>Status:</strong> {selectedCampaign.status}
+            </p>
+            <p className="mt-2">
+              <strong>Rejection Note:</strong> {selectedCampaign.rejectionNote}
+            </p>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };
