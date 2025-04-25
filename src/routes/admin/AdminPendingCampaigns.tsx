@@ -28,7 +28,8 @@ const samplePendingCampaigns = [
     startDate: "2023-06-01",
     type: "Ads",
     budget: "$5,000",
-    media: "Social, Display",
+    media:
+      "https://images.unsplash.com/photo-1736279206455-afb3b27b44d7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YWRzfGVufDB8fDB8fHww",
     action: "Click",
     urlOrPhone: "https://example.com",
     prizes: "",
@@ -42,7 +43,8 @@ const samplePendingCampaigns = [
     startDate: "2023-05-25",
     type: "Roulette",
     budget: "$10,000",
-    media: "Web, Mobile",
+    media:
+      "https://images.unsplash.com/photo-1712757057495-016f69c8edbd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YWRzfGVufDB8fDB8fHww",
     action: "Spin",
     urlOrPhone: "+1 555-123-4567",
     prizes: "Gift cards, Electronics, Cash",
@@ -56,7 +58,8 @@ const samplePendingCampaigns = [
     startDate: "2023-06-15",
     type: "Ads",
     budget: "$7,500",
-    media: "Display, Email",
+    media:
+      "https://images.unsplash.com/photo-1551383616-a9e150c07fca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGFkc3xlbnwwfHwwfHx8MA%3D%3D",
     action: "View",
     urlOrPhone: "https://123industries.com",
     prizes: "",
@@ -147,7 +150,13 @@ const AdminPendingCampaigns = () => {
                     <Td>{campaign.startDate}</Td>
                     <Td>{campaign.type}</Td>
                     <Td>{campaign.budget}</Td>
-                    <Td>{campaign.media}</Td>
+                    <Td>
+                      <img
+                        src={campaign.media}
+                        alt={`${campaign.advertiser} media`}
+                        className="h-12 w-12 object-cover rounded"
+                      />
+                    </Td>
                     <Td>{campaign.action}</Td>
                     <Td>{campaign.urlOrPhone}</Td>
                     <Td>{campaign.prizes || "N/A"}</Td>
@@ -201,9 +210,14 @@ const AdminPendingCampaigns = () => {
             <p>
               <strong>Budget:</strong> {selectedCampaign.budget}
             </p>
-            <p>
-              <strong>Media:</strong> {selectedCampaign.media}
-            </p>
+            <div className="mt-4">
+              <strong>Media:</strong>
+              <img
+                src={selectedCampaign.media}
+                alt={`${selectedCampaign.advertiser} media`}
+                className="max-w-full h-auto mt-2 rounded"
+              />
+            </div>
             <p>
               <strong>Action:</strong> {selectedCampaign.action}
             </p>
