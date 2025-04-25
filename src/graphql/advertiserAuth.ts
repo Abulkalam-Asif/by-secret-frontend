@@ -8,6 +8,12 @@ export const AUTHORIZE_ADVERTISER = gql`
   }
 `;
 
+export const GET_ADVERTISERS_COUNT = gql`
+  query GetAdvertisersCount {
+    getAdvertisersCount
+  }
+`;
+
 export const SUBMIT_ADVERTISER_STEP1 = gql`
   mutation SubmitAdvertiserStep1(
     $companyName: String!

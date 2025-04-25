@@ -7,9 +7,11 @@ import {
   Legend,
 } from "recharts";
 import Button from "../../components/general/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 import { useUser } from "../../contexts/UserContext";
+import { useQuery } from "@apollo/client";
+import { GET_ADVERTISERS_COUNT } from "../../graphql/advertiserAuth";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -22,6 +24,7 @@ interface StatCardProps {
   title: string;
   value: number;
   subtitle?: string;
+  loading?: boolean;
 }
 
 interface ChartCardProps {
@@ -60,12 +63,17 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
 };
 
 // Stat Card component for reusability
-const StatCard = ({ title, value, subtitle }: StatCardProps) => (
+const StatCard = ({ title, value, subtitle, loading }: StatCardProps) => (
   <div className="bg-white rounded-xl shadow-lg p-6 h-full">
     <h3 className="text-gray-500 text-sm font-medium mb-2">{title}</h3>
-    <p className="text-3xl font-bold text-theme-gray mb-2">
-      {value.toLocaleString()}
-    </p>
+    {loading ? (
+      <div className="animate-pulse bg-gray-200 h-6 w-1/2 rounded"></div>
+    ) : (
+      <p className="text-3xl font-bold text-theme-gray mb-2">
+        {value.toLocaleString()}
+      </p>
+    )}
+
     {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
   </div>
 );
@@ -153,8 +161,12 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
 };
 
 const AdminDashboard = () => {
+  const { data: advertisersCount, loading: loadingAdvertisersCount } = useQuery(
+    GET_ADVERTISERS_COUNT
+  );
+
   const { email } = useUser();
-  const dashboardData = {
+  const sampleDashboardData = {
     totalAdvertisers: 125,
     activeAdvertisers: 98,
     suspendedAdvertisers: 27,
@@ -166,6 +178,17 @@ const AdminDashboard = () => {
     totalAdClicks: 28976,
     totalAdViews: 145832,
   };
+
+  const [dashboardData, setDashboardData] = useState(sampleDashboardData);
+
+  useEffect(() => {
+    if (advertisersCount && !loadingAdvertisersCount) {
+      setDashboardData((prevData) => ({
+        ...prevData,
+        totalAdvertisers: advertisersCount.getAdvertisersCount,
+      }));
+    }
+  }, [advertisersCount, loadingAdvertisersCount]);
 
   // Chart colors - using theme colors
   const COLORS = ["#4338ca", "#0ea5e9", "#f59e0b", "#ef4444", "#8b5cf6"];
@@ -226,6 +249,7 @@ const AdminDashboard = () => {
             title="Total Advertisers"
             value={dashboardData.totalAdvertisers}
             subtitle="All registered advertisers"
+            loading={loadingAdvertisersCount}
           />
         </div>
         <div className="md:col-span-8">
