@@ -12,7 +12,6 @@ type ApprovedCampaign = {
   toDate: string;
   type: string;
   budget: string;
-  details: string;
   status: string;
 };
 
@@ -25,7 +24,6 @@ const sampleApprovedCampaigns = [
     toDate: "2023-07-01",
     type: "Ads",
     budget: "$5,000",
-    details: "Social Media Campaign",
     status: "running",
   },
   {
@@ -36,7 +34,6 @@ const sampleApprovedCampaigns = [
     toDate: "2023-06-09",
     type: "Roulette",
     budget: "$10,000",
-    details: "Mobile App Promotion",
     status: "queue",
   },
   {
@@ -47,7 +44,6 @@ const sampleApprovedCampaigns = [
     toDate: "2023-06-15",
     type: "Ads",
     budget: "$7,500",
-    details: "Email Marketing Campaign",
     status: "completed",
   },
   {
@@ -58,7 +54,6 @@ const sampleApprovedCampaigns = [
     toDate: "2023-07-25",
     type: "Roulette",
     budget: "$12,000",
-    details: "Product Launch Promotion",
     status: "queue",
   },
   {
@@ -69,7 +64,6 @@ const sampleApprovedCampaigns = [
     toDate: "2023-05-25",
     type: "Ads",
     budget: "$3,000",
-    details: "Display Advertising",
     status: "completed",
   },
 ];
@@ -106,7 +100,6 @@ const AdminApprovedCampaigns = () => {
                   <Th>To Date</Th>
                   <Th>Type</Th>
                   <Th>Budget</Th>
-                  <Th>Details</Th>
                   <Th>Status</Th>
                   <Th>Action</Th>
                 </tr>
@@ -122,7 +115,6 @@ const AdminApprovedCampaigns = () => {
                     <Td>{campaign.toDate}</Td>
                     <Td>{campaign.type}</Td>
                     <Td>{campaign.budget}</Td>
-                    <Td>{campaign.details}</Td>
                     <Td>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -172,9 +164,6 @@ const AdminApprovedCampaigns = () => {
             </p>
             <p>
               <strong>Budget:</strong> {selectedCampaign.budget}
-            </p>
-            <p>
-              <strong>Details:</strong> {selectedCampaign.details}
             </p>
             <p>
               <strong>Status:</strong>{" "}
