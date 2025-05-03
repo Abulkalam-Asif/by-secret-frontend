@@ -7,12 +7,15 @@ import { useAlert } from "../../contexts/AlertContext";
 import { useMutation } from "@apollo/client";
 import {
   CREATE_ADS_CAMPAIGN,
+  UPDATE_ADS_CAMPAIGN,
   GET_ADS_CAMPAIGNS,
 } from "../../graphql/adsCampaign";
 import Loader from "../../components/general/Loader";
+import { AdsCampaign } from "../../types";
 
 type AdvNewAdsCampaignModalProps = {
   setIsModalOpen: (isOpen: boolean) => void;
+  campaignToEdit?: AdsCampaign | undefined;
 };
 
 type NewCampaign = {
@@ -21,6 +24,7 @@ type NewCampaign = {
   adImage: {
     file: File | null;
     base64: string;
+    url: string;
   };
   action: string;
   startDate: string;
@@ -35,24 +39,52 @@ const defaultCampaign: NewCampaign = {
   adImage: {
     file: null,
     base64: "",
+    url: "",
   },
   action: "",
   startDate: "",
   endDate: "",
   budget: "",
-  status: "pending",
+  status: "PENDING", // Updated to match the enum in the backend
 };
 
 const AdvNewAdsCampaignModal = ({
   setIsModalOpen,
-}: AdvNewAdsCampaignModalProps) => {
+  campaignToEdit,
+}: AdvNewAdsCampaignModalProps & { campaignToEdit?: AdsCampaign }) => {
   const { showAlert } = useAlert();
   const [createAdsCampaignMutation, { loading: loadingCreateAdsCampaign }] =
     useMutation(CREATE_ADS_CAMPAIGN, {
       refetchQueries: [GET_ADS_CAMPAIGNS],
     });
 
-  const [newCampaign, setNewCampaign] = useState<NewCampaign>(defaultCampaign);
+  const [updateAdsCampaignMutation, { loading: loadingUpdateAdsCampaign }] =
+    useMutation(UPDATE_ADS_CAMPAIGN, {
+      refetchQueries: [GET_ADS_CAMPAIGNS],
+    });
+
+  const [newCampaign, setNewCampaign] = useState<NewCampaign>(
+    campaignToEdit
+      ? {
+          id: campaignToEdit.id,
+          name: campaignToEdit.name,
+          adImage: {
+            file: null,
+            base64: "",
+            url: campaignToEdit.adImage,
+          },
+          action: campaignToEdit.action,
+          startDate: new Date(Number(campaignToEdit.startDate))
+            .toISOString()
+            .split("T")[0],
+          endDate: new Date(Number(campaignToEdit.endDate))
+            .toISOString()
+            .split("T")[0],
+          budget: campaignToEdit.budget,
+          status: campaignToEdit.status,
+        }
+      : defaultCampaign
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,7 +95,7 @@ const AdvNewAdsCampaignModal = ({
     if (!newCampaign.name) {
       return "Campaign name is required";
     }
-    if (!newCampaign.adImage.file) {
+    if (!newCampaign.adImage.base64 && !newCampaign.adImage.url) {
       return "Ad image is required";
     }
     if (!newCampaign.action) {
@@ -89,7 +121,6 @@ const AdvNewAdsCampaignModal = ({
 
   const handleSubmitCampaign = async (e: React.MouseEvent) => {
     e.preventDefault();
-    console.log(newCampaign);
     const validationResponse = validateInput();
     if (validationResponse) {
       showAlert({
@@ -100,44 +131,72 @@ const AdvNewAdsCampaignModal = ({
     }
 
     try {
-      const response = await createAdsCampaignMutation({
-        variables: {
-          name: newCampaign.name,
-          adImage: newCampaign.adImage.base64,
-          action: newCampaign.action,
-          startDate: newCampaign.startDate,
-          endDate: newCampaign.endDate,
-          budget: newCampaign.budget,
-        },
-      });
-      if (response.data.createAdsCampaign.success) {
-        showAlert({
-          type: "success",
-          message: response.data.createAdsCampaign.message,
+      if (campaignToEdit) {
+        const response = await updateAdsCampaignMutation({
+          variables: {
+            id: campaignToEdit.id,
+            name: newCampaign.name,
+            adImage: newCampaign.adImage.base64 || newCampaign.adImage.url,
+            action: newCampaign.action,
+            startDate: newCampaign.startDate,
+            endDate: newCampaign.endDate,
+            budget: newCampaign.budget,
+          },
         });
-        setNewCampaign(defaultCampaign);
-        setIsModalOpen(false);
+        if (response.data.updateAdsCampaign.success) {
+          showAlert({
+            type: "success",
+            message: response.data.updateAdsCampaign.message,
+          });
+          setIsModalOpen(false);
+        } else {
+          showAlert({
+            type: "error",
+            message: response.data.updateAdsCampaign.message,
+          });
+        }
       } else {
-        showAlert({
-          type: "error",
-          message: response.data.createAdsCampaign.message,
+        const response = await createAdsCampaignMutation({
+          variables: {
+            name: newCampaign.name,
+            adImage: newCampaign.adImage.base64,
+            action: newCampaign.action,
+            startDate: newCampaign.startDate,
+            endDate: newCampaign.endDate,
+            budget: newCampaign.budget,
+          },
         });
+        if (response.data.createAdsCampaign.success) {
+          showAlert({
+            type: "success",
+            message: response.data.createAdsCampaign.message,
+          });
+          setNewCampaign(defaultCampaign);
+          setIsModalOpen(false);
+        } else {
+          showAlert({
+            type: "error",
+            message: response.data.createAdsCampaign.message,
+          });
+        }
       }
     } catch (error) {
       showAlert({
         type: "error",
-        message: "Error creating ads campaign",
+        message: "Error submitting ads campaign",
       });
     }
   };
 
   return (
     <>
-      {loadingCreateAdsCampaign && <Loader text="Creating ads campaign..." />}
+      {(loadingCreateAdsCampaign || loadingUpdateAdsCampaign) && (
+        <Loader text="Submitting ads campaign..." />
+      )}
       <Modal closeModal={() => setIsModalOpen(false)}>
         <form className="p-4">
           <h2 className="text-xl font-bold mb-4">
-            {newCampaign.id ? "Edit Campaign" : "Add New Campaign"}
+            {campaignToEdit ? "Edit Campaign" : "Add New Campaign"}
           </h2>
           <div className="mb-4">
             <InputBox
@@ -159,12 +218,20 @@ const AdvNewAdsCampaignModal = ({
               onChange={handleChange}
               classNameOuter="w-full"
             />
-            {newCampaign.adImage.file && (
+            {newCampaign.adImage.base64 ? (
               <img
                 src={newCampaign.adImage.base64}
                 alt="Logo Preview"
                 className="mt-2 h-20 w-20 object-contain rounded"
               />
+            ) : (
+              newCampaign.adImage.url && (
+                <img
+                  src={newCampaign.adImage.url}
+                  alt="Logo Preview"
+                  className="mt-2 h-20 w-20 object-contain rounded"
+                />
+              )
             )}
           </div>
           <div className="mb-4">
@@ -218,7 +285,7 @@ const AdvNewAdsCampaignModal = ({
             <Button
               text="Submit"
               onClick={handleSubmitCampaign}
-              disabled={loadingCreateAdsCampaign}
+              disabled={loadingCreateAdsCampaign || loadingUpdateAdsCampaign}
             />
             <Button text="Cancel" onClick={() => setIsModalOpen(false)} />
           </div>

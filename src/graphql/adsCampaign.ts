@@ -37,3 +37,28 @@ export const CREATE_ADS_CAMPAIGN = gql`
     }
   }
 `;
+
+export const UPDATE_ADS_CAMPAIGN = gql`
+  mutation UpdateAdsCampaign(
+    $id: ID!
+    $name: String
+    $adImage: String
+    $action: String
+    $startDate: String
+    $endDate: String
+    $budget: String
+  ) {
+    updateAdsCampaign(
+      id: $id
+      name: $name
+      adImage: $adImage
+      action: $action
+      startDate: $startDate
+      endDate: $endDate
+      budget: $budget
+    ) {
+      success
+      message
+    }
+  }
+`;

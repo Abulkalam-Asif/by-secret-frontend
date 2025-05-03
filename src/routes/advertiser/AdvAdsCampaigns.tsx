@@ -17,40 +17,19 @@ const AdvAdsCampaigns = () => {
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [campaignToEdit, setCampaignToEdit] = useState<AdsCampaign | null>(
+    null
+  );
 
   const handleAddCampaign = () => {
+    setCampaignToEdit(null);
     setIsModalOpen(true);
   };
 
-  // const handleEditCampaign = (campaign: Campaign) => {
-  //   setNewCampaign(campaign);
-  //   setIsModalOpen(true);
-  // };
-
-  // const handleSubmitCampaign = () => {
-  //   setCampaigns((prev: Campaign[]) => {
-  //     const existingIndex = prev.findIndex((c) => c.id === newCampaign.id);
-  //     if (existingIndex !== -1) {
-  //       // Update existing campaign
-  //       const updatedCampaigns = [...prev];
-  //       updatedCampaigns[existingIndex] = { ...newCampaign };
-  //       return updatedCampaigns;
-  //     }
-  //     // Add new campaign
-  //     return [...prev, { ...newCampaign, status: "pending", id: Date.now() }];
-  //   });
-
-  //   setNewCampaign({
-  //     id: 0,
-  //     name: "",
-  //     image: null,
-  //     action: "",
-  //     dateRange: { from: "", to: "" },
-  //     budget: "",
-  //     status: "pending",
-  //   });
-  //   setIsModalOpen(false);
-  // };
+  const handleEditCampaign = (campaign: AdsCampaign) => {
+    setCampaignToEdit(campaign);
+    setIsModalOpen(true);
+  };
 
   return (
     <>
@@ -104,11 +83,14 @@ const AdvAdsCampaigns = () => {
                           )}
                         </Td>
                         <Td>{campaign.action}</Td>
-                        <Td>{`${new Date(
-                          Number(campaign.startDate)
-                        ).toLocaleDateString()} - ${new Date(
-                          Number(campaign.endDate)
-                        ).toLocaleDateString()}`}</Td>
+                        <Td>
+                          {`${new Date(
+                            Number(campaign.startDate)
+                          ).toLocaleDateString("en-GB")} - ${new Date(
+                            Number(campaign.endDate)
+                          ).toLocaleDateString("en-GB")}`}
+                        </Td>
+
                         <Td>${campaign.budget}</Td>
                         <Td>
                           <span
@@ -124,7 +106,10 @@ const AdvAdsCampaigns = () => {
                           </span>
                         </Td>
                         <Td>
-                          <Button text="Edit" onClick={() => {}} />
+                          <Button
+                            text="Edit"
+                            onClick={() => handleEditCampaign(campaign)}
+                          />
                         </Td>
                       </tr>
                     ))}
@@ -136,7 +121,10 @@ const AdvAdsCampaigns = () => {
       </section>
 
       {isModalOpen && (
-        <AdvNewAdsCampaignModal setIsModalOpen={setIsModalOpen} />
+        <AdvNewAdsCampaignModal
+          setIsModalOpen={setIsModalOpen}
+          campaignToEdit={campaignToEdit || undefined}
+        />
       )}
     </>
   );
