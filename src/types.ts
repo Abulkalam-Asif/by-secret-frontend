@@ -15,3 +15,14 @@ export type EmailTemplate = {
   content: string;
   active: boolean;
 };
+
+export type AdsCampaign = {
+  id: number;
+  name: string;
+  adImage: string;
+  action: string;
+  startDate: string;
+  endDate: string;
+  budget: string;
+  status: string;
+};
