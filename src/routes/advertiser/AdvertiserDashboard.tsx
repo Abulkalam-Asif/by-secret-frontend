@@ -117,7 +117,7 @@ const ChartCard = ({
                 innerRadius={donut ? "32%" : 0}
                 fill="#8884d8"
                 dataKey="value"
-                paddingAngle={4}
+                paddingAngle={1}
                 cornerRadius={4}>
                 {data.map((_, index) => (
                   <Cell
@@ -165,11 +165,11 @@ const AdvertiserDashboard = () => {
     },
   };
 
-  const COLORS = ["#4338ca", "#0ea5e9", "#f59e0b", "#ef4444"];
+  const COLORS = ["#008236", "#a65f00", "#c10007"];
 
   const campaignStatusData: ChartDataItem[] = [
-    { name: "Pending", value: dashboardData.campaigns.pending },
     { name: "Approved", value: dashboardData.campaigns.approved },
+    { name: "Pending", value: dashboardData.campaigns.pending },
     { name: "Rejected", value: dashboardData.campaigns.rejected },
   ];
 
