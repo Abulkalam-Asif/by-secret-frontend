@@ -9,6 +9,8 @@ import {
 import { useState } from "react";
 import Button from "../../components/general/Button";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
+import { useQuery } from "@apollo/client";
+import { GET_ADS_CAMPAIGNS_COUNT } from "../../graphql/adsCampaign";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -28,6 +30,7 @@ interface ChartCardProps {
   data: ChartDataItem[];
   colors: string[];
   donut?: boolean;
+  loading?: boolean;
 }
 
 // Define type for tooltip props
@@ -67,8 +70,15 @@ const StatCard = ({ title, value, subtitle }: StatCardProps) => (
 );
 
 // Chart Card component for reusability
-const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
+const ChartCard = ({
+  title,
+  data,
+  colors,
+  donut = true,
+  loading,
+}: ChartCardProps) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
+
   const dataWithPercent = data.map((item) => ({
     ...item,
     percent: item.value / total,
@@ -87,64 +97,79 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
     setOpacity((op) => ({ ...op, [value]: 1 }));
   };
 
-  return (
+  return total > 0 ? (
     <div className="bg-white rounded-xl shadow-lg p-6 h-full">
       <h3 className="text-gray-500 text-sm font-medium mb-4">{title}</h3>
-      <div className="h-48 sm:h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={dataWithPercent}
-              cx="50%"
-              cy="50%"
-              outerRadius="80%"
-              innerRadius={donut ? "32%" : 0}
-              fill="#8884d8"
-              dataKey="value"
-              paddingAngle={4}
-              cornerRadius={4}>
-              {data.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={colors[index % colors.length]}
-                  opacity={opacity[_.name]}
-                />
-              ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              onMouseEnter={handleLegendMouseEnter}
-              onMouseLeave={handleLegendMouseLeave}
-              iconType="circle"
-              iconSize={10}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="animate-pulse bg-gray-200 h-40 w-40 rounded-full sm:h-52 sm:w-52"></div>
+          <div className="animate-pulse bg-gray-200 h-6 w-1/2 rounded"></div>
+        </div>
+      ) : (
+        <div className="h-48 sm:h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={dataWithPercent}
+                cx="50%"
+                cy="50%"
+                outerRadius="80%"
+                innerRadius={donut ? "32%" : 0}
+                fill="#8884d8"
+                dataKey="value"
+                paddingAngle={4}
+                cornerRadius={4}>
+                {data.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={colors[index % colors.length]}
+                    opacity={opacity[_.name]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+              <Legend
+                onMouseEnter={handleLegendMouseEnter}
+                onMouseLeave={handleLegendMouseLeave}
+                iconType="circle"
+                iconSize={10}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+    </div>
+  ) : (
+    <div className="bg-white rounded-xl shadow-lg p-6 h-full flex items-center justify-center">
+      <p className="text-gray-500 text-sm font-medium">
+        No campaigns available
+      </p>
     </div>
   );
 };
 
 const AdvertiserDashboard = () => {
+  const { data: campaignsCountData, loading: loadingCampaignsCount } = useQuery(
+    GET_ADS_CAMPAIGNS_COUNT
+  );
+
   const dashboardData = {
     totalClicks: 1200,
     totalViews: 4500,
     averageClicksPerCampaign: 150,
     averageViewsPerCampaign: 375,
     campaigns: {
-      open: 10,
-      closed: 15,
-      pending: 5,
-      rejected: 2,
+      pending: campaignsCountData?.getAdsCampaignsCount?.pending || 0,
+      approved: campaignsCountData?.getAdsCampaignsCount?.approved || 0,
+      rejected: campaignsCountData?.getAdsCampaignsCount?.rejected || 0,
     },
   };
 
   const COLORS = ["#4338ca", "#0ea5e9", "#f59e0b", "#ef4444"];
 
   const campaignStatusData: ChartDataItem[] = [
-    { name: "Open", value: dashboardData.campaigns.open },
-    { name: "Closed", value: dashboardData.campaigns.closed },
     { name: "Pending", value: dashboardData.campaigns.pending },
+    { name: "Approved", value: dashboardData.campaigns.approved },
     { name: "Rejected", value: dashboardData.campaigns.rejected },
   ];
 
@@ -180,6 +205,7 @@ const AdvertiserDashboard = () => {
             data={campaignStatusData}
             colors={COLORS}
             donut={true}
+            loading={loadingCampaignsCount}
           />
         </div>
         <div className="md:col-span-4">
