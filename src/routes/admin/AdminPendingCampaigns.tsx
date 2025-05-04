@@ -1,99 +1,114 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Button from "../../components/general/Button";
 import Th from "../../components/general/Th";
 import Td from "../../components/general/Td";
 import Modal from "../../components/general/Modal.tsx"; // Assuming a Modal component exists
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  GET_PENDING_ADS_CAMPAIGNS,
+  APPROVE_ADS_CAMPAIGN,
+  REJECT_ADS_CAMPAIGN,
+} from "../../graphql/pendingCampaigns.ts";
+import Loader from "../../components/general/Loader.tsx";
+import { useAlert } from "../../contexts/AlertContext.tsx";
 
-type PendingCampaign = {
+type PendingAdsCampaign = {
   id: number;
+  name: string;
   advertiser: string;
   dateRequested: string;
   days: number;
   startDate: string;
-  type: string;
   budget: string;
   media: string;
   action: string;
-  urlOrPhone: string;
-  prizes: string;
-  status: string;
 };
 
-const samplePendingCampaigns = [
-  {
-    id: 1,
-    advertiser: "ABC Company",
-    dateRequested: "2023-05-10",
-    days: 30,
-    startDate: "2023-06-01",
-    type: "Ads",
-    budget: "$5,000",
-    media:
-      "https://images.unsplash.com/photo-1736279206455-afb3b27b44d7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YWRzfGVufDB8fDB8fHww",
-    action: "Click",
-    urlOrPhone: "https://example.com",
-    prizes: "",
-    status: "pending",
-  },
-  {
-    id: 2,
-    advertiser: "XYZ Corporation",
-    dateRequested: "2023-05-12",
-    days: 15,
-    startDate: "2023-05-25",
-    type: "Roulette",
-    budget: "$10,000",
-    media:
-      "https://images.unsplash.com/photo-1712757057495-016f69c8edbd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YWRzfGVufDB8fDB8fHww",
-    action: "Spin",
-    urlOrPhone: "+1 555-123-4567",
-    prizes: "Gift cards, Electronics, Cash",
-    status: "pending",
-  },
-  {
-    id: 3,
-    advertiser: "123 Industries",
-    dateRequested: "2023-05-08",
-    days: 45,
-    startDate: "2023-06-15",
-    type: "Ads",
-    budget: "$7,500",
-    media:
-      "https://images.unsplash.com/photo-1551383616-a9e150c07fca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGFkc3xlbnwwfHwwfHx8MA%3D%3D",
-    action: "View",
-    urlOrPhone: "https://123industries.com",
-    prizes: "",
-    status: "pending",
-  },
-];
-
 const AdminPendingCampaigns = () => {
+  const { showAlert } = useAlert();
+  const { data, loading: loadingPendingAdsCampaigns } = useQuery(
+    GET_PENDING_ADS_CAMPAIGNS
+  );
+
+  const pendingCampaigns = useMemo(
+    () => data?.getPendingAdsCampaigns || [],
+    [data?.getPendingAdsCampaigns]
+  );
+
   const [selectedCampaign, setSelectedCampaign] =
-    useState<PendingCampaign | null>(null);
+    useState<PendingAdsCampaign | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showRejectionNotes, setShowRejectionNotes] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  const handleViewCampaign = (campaign: PendingCampaign) => {
+  const [approveAdsCampaign] = useMutation(APPROVE_ADS_CAMPAIGN, {
+    refetchQueries: [GET_PENDING_ADS_CAMPAIGNS],
+  });
+
+  const [rejectAdsCampaign] = useMutation(REJECT_ADS_CAMPAIGN, {
+    refetchQueries: [GET_PENDING_ADS_CAMPAIGNS],
+  });
+
+  const handleViewCampaign = (campaign: PendingAdsCampaign) => {
     setSelectedCampaign(campaign);
     setIsModalOpen(true);
     setShowRejectionNotes(false);
     setRejectionReason("");
   };
 
-  const handleApprove = () => {
-    // Logic to approve the campaign
+  const handleApprove = async () => {
+    if (!selectedCampaign) return;
+    try {
+      const response = await approveAdsCampaign({
+        variables: { id: selectedCampaign.id },
+      });
+      if (response.data.approveAdsCampaign.success) {
+        showAlert({
+          type: "success",
+          message: "Campaign approved successfully",
+        });
+      } else {
+        showAlert({
+          type: "error",
+          message: response.data.approveAdsCampaign.message,
+        });
+      }
+    } catch (error) {
+      showAlert({
+        type: "error",
+        message: "Error approving campaign",
+      });
+    }
     setIsModalOpen(false);
   };
 
   const handleReject = () => {
-    // Show rejection notes field
     setShowRejectionNotes(true);
   };
 
-  const handleSubmitRejection = () => {
-    // Logic to reject the campaign with reason
-    console.log(`Campaign rejected with reason: ${rejectionReason}`);
+  const handleSubmitRejection = async () => {
+    if (!selectedCampaign) return;
+    try {
+      const response = await rejectAdsCampaign({
+        variables: { id: selectedCampaign.id, rejectionReason },
+      });
+      if (response.data.rejectAdsCampaign.success) {
+        showAlert({
+          type: "success",
+          message: "Campaign rejected successfully",
+        });
+      } else {
+        showAlert({
+          type: "error",
+          message: response.data.rejectAdsCampaign.message,
+        });
+      }
+    } catch (error) {
+      showAlert({
+        type: "error",
+        message: "Error rejecting campaign",
+      });
+    }
     setIsModalOpen(false);
     setShowRejectionNotes(false);
     setRejectionReason("");
@@ -117,74 +132,72 @@ const AdminPendingCampaigns = () => {
                 List of all pending campaigns in the system
               </p>
             </div>
-            <div>
-              <Button text="+ Add New Campaign" onClick={() => {}} />
-            </div>
           </div>
-          <div className="w-full overflow-x-auto">
-            <table className="w-full min-w-fit">
-              <thead>
-                <tr>
-                  <Th>Advertiser</Th>
-                  <Th>Date Requested</Th>
-                  <Th>Days</Th>
-                  <Th>Start Date</Th>
-                  <Th>Type</Th>
-                  <Th>Budget</Th>
-                  <Th>Media</Th>
-                  <Th>Action</Th>
-                  <Th>URL or Phone</Th>
-                  <Th>Prizes</Th>
-                  <Th>Status</Th>
-                  <Th>Action</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {samplePendingCampaigns.map((campaign) => (
-                  <tr
-                    key={campaign.id}
-                    className="border-b border-gray-200 hover:bg-gray-50">
-                    <Td>{campaign.advertiser}</Td>
-                    <Td>{campaign.dateRequested}</Td>
-                    <Td>{campaign.days}</Td>
-                    <Td>{campaign.startDate}</Td>
-                    <Td>{campaign.type}</Td>
-                    <Td>{campaign.budget}</Td>
-                    <Td>
-                      <img
-                        src={campaign.media}
-                        alt={`${campaign.advertiser} media`}
-                        className="h-12 w-12 object-cover rounded"
-                      />
-                    </Td>
-                    <Td>{campaign.action}</Td>
-                    <Td>{campaign.urlOrPhone}</Td>
-                    <Td>{campaign.prizes || "N/A"}</Td>
-                    <Td>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          campaign.status === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : campaign.status === "approved"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}>
-                        {campaign.status.charAt(0).toUpperCase() +
-                          campaign.status.slice(1)}
-                      </span>
-                    </Td>
-                    <Td>
-                      <Button
-                        text="View"
-                        onClick={() => handleViewCampaign(campaign)}
-                        className="bg-blue-500 text-white rounded px-4 py-2"
-                      />
-                    </Td>
+          <h2 className="text-lg mb-4 font-bold text-theme-gray">
+            Ads Campaigns
+          </h2>
+          {loadingPendingAdsCampaigns ? (
+            <Loader text="Loading Pending Ads Campaigns..." />
+          ) : (
+            <div className="w-full overflow-x-auto mb-8">
+              <table className="w-full min-w-fit">
+                <thead>
+                  <tr>
+                    <Th>Name</Th>
+                    <Th>Advertiser</Th>
+                    <Th>Date Requested</Th>
+                    <Th>Days</Th>
+                    <Th>Start Date</Th>
+                    <Th>Budget</Th>
+                    <Th>Media</Th>
+                    <Th>Action</Th>
+                    <Th>View</Th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {pendingCampaigns.length > 0 ? (
+                    pendingCampaigns.map((campaign: PendingAdsCampaign) => (
+                      <tr
+                        key={campaign.id}
+                        className="border-b border-gray-200 hover:bg-gray-50">
+                        <Td>{campaign.name}</Td>
+                        <Td>{campaign.advertiser}</Td>
+                        <Td>{`${new Date(
+                          Number(campaign.dateRequested)
+                        ).toLocaleDateString("en-GB")}`}</Td>
+                        <Td>{campaign.days}</Td>
+                        <Td>{`${new Date(
+                          Number(campaign.startDate)
+                        ).toLocaleDateString("en-GB")}`}</Td>
+                        <Td>${campaign.budget}</Td>
+                        <Td>
+                          <img
+                            src={campaign.media}
+                            alt={`${campaign.advertiser}-media`}
+                            className="h-12 w-12 object-cover rounded"
+                          />
+                        </Td>
+                        <Td>{campaign.action}</Td>
+                        <Td>
+                          <Button
+                            text="View"
+                            onClick={() => handleViewCampaign(campaign)}
+                            className="bg-blue-500 text-white rounded px-4 py-2"
+                          />
+                        </Td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="border-b border-gray-200 hover:bg-gray-50">
+                      <Td colSpan={9} align="center">
+                        No pending campaigns found.
+                      </Td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </section>
 
@@ -196,19 +209,25 @@ const AdminPendingCampaigns = () => {
               <strong>Advertiser:</strong> {selectedCampaign.advertiser}
             </p>
             <p>
-              <strong>Date Requested:</strong> {selectedCampaign.dateRequested}
+              <strong>Date Requested:</strong>{" "}
+              {`${new Date(
+                Number(selectedCampaign.dateRequested)
+              ).toLocaleDateString("en-GB")}`}
             </p>
             <p>
               <strong>Days:</strong> {selectedCampaign.days}
             </p>
             <p>
-              <strong>Start Date:</strong> {selectedCampaign.startDate}
+              <strong>Start Date:</strong>{" "}
+              {`${new Date(
+                Number(selectedCampaign.startDate)
+              ).toLocaleDateString("en-GB")}`}
             </p>
             <p>
-              <strong>Type:</strong> {selectedCampaign.type}
+              <strong>Budget:</strong> ${selectedCampaign.budget}
             </p>
             <p>
-              <strong>Budget:</strong> {selectedCampaign.budget}
+              <strong>Action:</strong> {selectedCampaign.action}
             </p>
             <div className="mt-4">
               <strong>Media:</strong>
@@ -218,18 +237,6 @@ const AdminPendingCampaigns = () => {
                 className="max-w-full h-auto mt-2 rounded"
               />
             </div>
-            <p>
-              <strong>Action:</strong> {selectedCampaign.action}
-            </p>
-            <p>
-              <strong>URL or Phone:</strong> {selectedCampaign.urlOrPhone}
-            </p>
-            <p>
-              <strong>Prizes:</strong> {selectedCampaign.prizes || "N/A"}
-            </p>
-            <p>
-              <strong>Status:</strong> {selectedCampaign.status}
-            </p>
             {showRejectionNotes ? (
               <div className="mt-4">
                 <textarea

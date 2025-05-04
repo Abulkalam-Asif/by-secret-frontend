@@ -65,7 +65,7 @@ const AdvAdsCampaigns = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {adsCampaigns.length > 0 &&
+                  {adsCampaigns.length > 0 ? (
                     adsCampaigns.map((campaign: AdsCampaign) => (
                       <tr
                         key={campaign.id}
@@ -95,9 +95,9 @@ const AdvAdsCampaigns = () => {
                         <Td>
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              campaign.status === "pending"
+                              campaign.status === "PENDING"
                                 ? "bg-yellow-100 text-yellow-700"
-                                : campaign.status === "approved"
+                                : campaign.status === "APPROVED"
                                 ? "bg-green-100 text-green-700"
                                 : "bg-red-100 text-red-700"
                             }`}>
@@ -112,7 +112,14 @@ const AdvAdsCampaigns = () => {
                           />
                         </Td>
                       </tr>
-                    ))}
+                    ))
+                  ) : (
+                    <tr className="border-b border-gray-200">
+                      <Td colSpan={7} align="center">
+                        No campaigns found.
+                      </Td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
