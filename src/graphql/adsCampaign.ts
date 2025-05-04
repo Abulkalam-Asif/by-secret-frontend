@@ -11,6 +11,7 @@ export const GET_ADS_CAMPAIGNS = gql`
       endDate
       budget
       status
+      rejectionReason
     }
   }
 `;

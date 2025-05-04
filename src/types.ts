@@ -25,4 +25,5 @@ export type AdsCampaign = {
   endDate: string;
   budget: string;
   status: string;
+  rejectionReason: string;
 };

@@ -8,6 +8,7 @@ import { useQuery } from "@apollo/client";
 import { AdsCampaign } from "../../types";
 import Loader from "../../components/general/Loader";
 import AdvNewAdsCampaignModal from "./AdvNewAdsCampaignModal";
+import Modal from "../../components/general/Modal";
 
 const AdvAdsCampaigns = () => {
   const { loading: loadingAdsCampaigns, data } = useQuery(GET_ADS_CAMPAIGNS);
@@ -29,6 +30,16 @@ const AdvAdsCampaigns = () => {
   const handleEditCampaign = (campaign: AdsCampaign) => {
     setCampaignToEdit(campaign);
     setIsModalOpen(true);
+  };
+
+  const [campaignToView, setCampaignToView] = useState<AdsCampaign | null>(
+    null
+  );
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+
+  const handleViewCampaign = (campaign: AdsCampaign) => {
+    setCampaignToView(campaign);
+    setIsViewModalOpen(true);
   };
 
   return (
@@ -107,8 +118,16 @@ const AdvAdsCampaigns = () => {
                         </Td>
                         <Td>
                           <Button
-                            text="Edit"
-                            onClick={() => handleEditCampaign(campaign)}
+                            text={
+                              campaign.status === "PENDING" ? "Edit" : "View"
+                            }
+                            onClick={() => {
+                              if (campaign.status === "PENDING") {
+                                handleEditCampaign(campaign);
+                              } else {
+                                handleViewCampaign(campaign);
+                              }
+                            }}
                           />
                         </Td>
                       </tr>
@@ -126,6 +145,63 @@ const AdvAdsCampaigns = () => {
           )}
         </div>
       </section>
+
+      {isViewModalOpen && campaignToView && (
+        <Modal closeModal={() => setIsViewModalOpen(false)}>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Campaign Details</h2>
+            <p>
+              <strong>Name:</strong> {campaignToView.name}
+            </p>
+            <p>
+              <strong>Action:</strong> {campaignToView.action}
+            </p>
+            <p>
+              <strong>Start Date:</strong>{" "}
+              {`${new Date(Number(campaignToView.startDate)).toLocaleDateString(
+                "en-GB"
+              )}`}
+            </p>
+            <p>
+              <strong>End Date:</strong>{" "}
+              {`${new Date(Number(campaignToView.endDate)).toLocaleDateString(
+                "en-GB"
+              )}`}
+            </p>
+            <p>
+              <strong>Budget:</strong> ${campaignToView.budget}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  campaignToView.status === "PENDING"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : campaignToView.status === "APPROVED"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}>
+                {campaignToView.status.charAt(0).toUpperCase() +
+                  campaignToView.status.slice(1)}
+              </span>
+            </p>
+            {campaignToView.status === "REJECTED" && (
+              <p>
+                <strong>Rejection Reason:</strong>{" "}
+                {campaignToView.rejectionReason}
+              </p>
+            )}
+            <div className="mt-4">
+              <strong>Ad Image:</strong>
+              <img
+                src={campaignToView.adImage}
+                alt={`${campaignToView.name}-media`}
+                className="max-w-full h-auto mt-2 rounded"
+              />
+            </div>
+          </div>
+        </Modal>
+      )}
 
       {isModalOpen && (
         <AdvNewAdsCampaignModal
