@@ -14,6 +14,20 @@ export const GET_ADVERTISERS_COUNT = gql`
   }
 `;
 
+export const GET_ADVERTISERS = gql`
+  query GetAdvertisers {
+    getAdvertisers {
+      id
+      companyName
+      logo
+      fullContactName
+      phone
+      email
+      address
+    }
+  }
+`;
+
 export const SUBMIT_ADVERTISER_STEP1 = gql`
   mutation SubmitAdvertiserStep1(
     $companyName: String!
