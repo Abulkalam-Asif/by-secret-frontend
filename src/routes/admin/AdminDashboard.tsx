@@ -12,6 +12,7 @@ import { Payload } from "recharts/types/component/DefaultLegendContent";
 import { useUser } from "../../contexts/UserContext";
 import { useQuery } from "@apollo/client";
 import { GET_ADVERTISERS_COUNT } from "../../graphql/advertiserAuth";
+import { GET_ALL_ADS_CAMPAIGNS_COUNT } from "../../graphql/adsCampaign";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -32,6 +33,7 @@ interface ChartCardProps {
   data: ChartDataItem[];
   colors: string[];
   donut?: boolean;
+  loading?: boolean;
 }
 
 // Define type for tooltip props
@@ -79,7 +81,13 @@ const StatCard = ({ title, value, subtitle, loading }: StatCardProps) => (
 );
 
 // Chart Card component for reusability
-const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
+const ChartCard = ({
+  title,
+  data,
+  colors,
+  donut = true,
+  loading,
+}: ChartCardProps) => {
   // Calculate percentages for each item
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const dataWithPercent = data.map((item) => ({
@@ -106,56 +114,63 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 h-full">
       <h3 className="text-gray-500 text-sm font-medium mb-4">{title}</h3>
-      <div className="h-48 sm:h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <defs>
-              {colors.map((color, index) => (
-                <linearGradient
-                  key={`gradient-${index}`}
-                  id={`gradient-${index}`}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1">
-                  <stop offset="0%" stopColor={color} stopOpacity={0.8} />
-                  <stop offset="100%" stopColor={color} stopOpacity={1} />
-                </linearGradient>
-              ))}
-            </defs>
-            <Pie
-              data={dataWithPercent}
-              cx="50%"
-              cy="50%"
-              outerRadius="80%"
-              innerRadius={donut ? "32%" : 0}
-              fill="#8884d8"
-              dataKey="value"
-              isAnimationActive={true}
-              animationDuration={800}
-              animationBegin={300}
-              paddingAngle={4}
-              cornerRadius={4}>
-              {data.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={`url(#gradient-${index % colors.length})`}
-                  stroke={colors[index % colors.length]}
-                  strokeWidth={1}
-                  opacity={opacity[_.name]}
-                />
-              ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              onMouseEnter={handleLegendMouseEnter}
-              onMouseLeave={handleLegendMouseLeave}
-              iconType="circle"
-              iconSize={10}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center gap-4">
+          <div className="animate-pulse bg-gray-200 h-40 w-40 rounded-full sm:h-52 sm:w-52"></div>
+          <div className="animate-pulse bg-gray-200 h-6 w-1/2 rounded"></div>
+        </div>
+      ) : (
+        <div className="h-48 sm:h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <defs>
+                {colors.map((color, index) => (
+                  <linearGradient
+                    key={`gradient-${index}`}
+                    id={`gradient-${index}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity={0.8} />
+                    <stop offset="100%" stopColor={color} stopOpacity={1} />
+                  </linearGradient>
+                ))}
+              </defs>
+              <Pie
+                data={dataWithPercent}
+                cx="50%"
+                cy="50%"
+                outerRadius="80%"
+                innerRadius={donut ? "32%" : 0}
+                fill="#8884d8"
+                dataKey="value"
+                isAnimationActive={true}
+                animationDuration={800}
+                animationBegin={300}
+                paddingAngle={4}
+                cornerRadius={4}>
+                {data.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={`url(#gradient-${index % colors.length})`}
+                    stroke={colors[index % colors.length]}
+                    strokeWidth={1}
+                    opacity={opacity[_.name]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+              <Legend
+                onMouseEnter={handleLegendMouseEnter}
+                onMouseLeave={handleLegendMouseLeave}
+                iconType="circle"
+                iconSize={10}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 };
@@ -163,6 +178,10 @@ const ChartCard = ({ title, data, colors, donut = true }: ChartCardProps) => {
 const AdminDashboard = () => {
   const { data: advertisersCount, loading: loadingAdvertisersCount } = useQuery(
     GET_ADVERTISERS_COUNT
+  );
+
+  const { data: campaignsCountData, loading: loadingCampaignsCount } = useQuery(
+    GET_ALL_ADS_CAMPAIGNS_COUNT
   );
 
   const { email } = useUser();
@@ -190,8 +209,23 @@ const AdminDashboard = () => {
     }
   }, [advertisersCount, loadingAdvertisersCount]);
 
+  useEffect(() => {
+    if (campaignsCountData && !loadingCampaignsCount) {
+      setDashboardData((prevData) => ({
+        ...prevData,
+        totalCampaigns:
+          campaignsCountData.getAllAdsCampaignsCount.pending +
+          campaignsCountData.getAllAdsCampaignsCount.approved +
+          campaignsCountData.getAllAdsCampaignsCount.rejected,
+        scheduledCampaigns: campaignsCountData.getAllAdsCampaignsCount.pending,
+        runningCampaigns: campaignsCountData.getAllAdsCampaignsCount.approved,
+        completedCampaigns: campaignsCountData.getAllAdsCampaignsCount.rejected,
+      }));
+    }
+  }, [campaignsCountData, loadingCampaignsCount]);
+
   // Chart colors - using theme colors
-  const COLORS = ["#4338ca", "#0ea5e9", "#f59e0b", "#ef4444", "#8b5cf6"];
+  const COLORS = ["#008236", "#a65f00", "#c10007"];
 
   // Advertiser status data for pie chart
   const advertiserStatusData: ChartDataItem[] = [
@@ -201,9 +235,9 @@ const AdminDashboard = () => {
 
   // Campaign status data for pie chart
   const campaignStatusData: ChartDataItem[] = [
-    { name: "Scheduled", value: dashboardData.scheduledCampaigns },
-    { name: "Running", value: dashboardData.runningCampaigns },
-    { name: "Completed", value: dashboardData.completedCampaigns },
+    { name: "Pending", value: dashboardData.scheduledCampaigns },
+    { name: "Approved", value: dashboardData.runningCampaigns },
+    { name: "Rejected", value: dashboardData.completedCampaigns },
   ];
 
   // Ad performance data for pie chart
@@ -267,6 +301,7 @@ const AdminDashboard = () => {
             title="Total Campaigns"
             value={dashboardData.totalCampaigns}
             subtitle="All advertising campaigns"
+            loading={loadingCampaignsCount}
           />
         </div>
         <div className="md:col-span-8">
@@ -275,6 +310,7 @@ const AdminDashboard = () => {
             data={campaignStatusData}
             colors={COLORS}
             donut={true}
+            loading={loadingCampaignsCount}
           />
         </div>
 

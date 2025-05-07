@@ -26,6 +26,16 @@ export const GET_ADS_CAMPAIGNS_COUNT = gql`
   }
 `;
 
+export const GET_ALL_ADS_CAMPAIGNS_COUNT = gql`
+  query GetAllAdsCampaignsCount {
+    getAllAdsCampaignsCount {
+      pending
+      approved
+      rejected
+    }
+  }
+`;
+
 export const CREATE_ADS_CAMPAIGN = gql`
   mutation CreateAdsCampaign(
     $name: String!
