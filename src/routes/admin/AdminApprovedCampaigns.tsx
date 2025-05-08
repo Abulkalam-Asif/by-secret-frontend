@@ -4,6 +4,7 @@ import Th from "../../components/general/Th";
 import Td from "../../components/general/Td";
 import Modal from "../../components/general/Modal";
 import { GET_APPROVED_ADS_CAMPAIGNS } from "../../graphql/approvedCampaigns";
+import { GET_APPROVED_ROULETTE_CAMPAIGNS } from "../../graphql/approvedCampaigns";
 import { useQuery } from "@apollo/client";
 import Loader from "../../components/general/Loader";
 
@@ -17,21 +18,52 @@ type ApprovedAdsCampaign = {
   budget: string;
 };
 
+type ApprovedRouletteCampaign = {
+  id: number;
+  name: string;
+  advertiser: string;
+  dateCreated: string;
+  startDate: string;
+  endDate: string;
+  mainPrize: string;
+  mainPrizeAmount: string;
+  secPrize1: string;
+  amount1: string;
+  secPrize2: string;
+  amount2: string;
+  secPrize3: string;
+  amount3: string;
+  budget: string;
+};
+
 const AdminApprovedCampaigns = () => {
-  const { data, loading: loadingApprovedCampaigns } = useQuery(
+  const { data: adsData, loading: loadingApprovedAdsCampaigns } = useQuery(
     GET_APPROVED_ADS_CAMPAIGNS
   );
-  const approvedCampaigns = useMemo(
-    () => data?.getApprovedAdsCampaigns || [],
-    [data?.getApprovedAdsCampaigns]
+  const { data: rouletteData, loading: loadingApprovedRouletteCampaigns } =
+    useQuery(GET_APPROVED_ROULETTE_CAMPAIGNS);
+
+  const approvedAdsCampaigns = useMemo(
+    () => adsData?.getApprovedAdsCampaigns || [],
+    [adsData?.getApprovedAdsCampaigns]
+  );
+  const approvedRouletteCampaigns = useMemo(
+    () => rouletteData?.getApprovedRouletteCampaigns || [],
+    [rouletteData?.getApprovedRouletteCampaigns]
   );
 
-  const [selectedCampaign, setSelectedCampaign] =
-    useState<ApprovedAdsCampaign | null>(null);
+  const [selectedCampaign, setSelectedCampaign] = useState<
+    ApprovedAdsCampaign | ApprovedRouletteCampaign | null
+  >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [campaignType, setCampaignType] = useState<"ads" | "roulette">("ads");
 
-  const handleViewCampaign = (campaign: ApprovedAdsCampaign) => {
+  const handleViewCampaign = (
+    campaign: ApprovedAdsCampaign | ApprovedRouletteCampaign,
+    type: "ads" | "roulette"
+  ) => {
     setSelectedCampaign(campaign);
+    setCampaignType(type);
     setIsModalOpen(true);
   };
 
@@ -47,11 +79,13 @@ const AdminApprovedCampaigns = () => {
               View all approved campaigns in the system
             </p>
           </div>
+
+          {/* Ads Campaigns Section */}
           <h2 className="text-lg mb-4 font-bold text-theme-gray">
             Ads Campaigns
           </h2>
-          {loadingApprovedCampaigns ? (
-            <Loader text="Loading Approved Campaigns..." />
+          {loadingApprovedAdsCampaigns ? (
+            <Loader text="Loading Approved Ads Campaigns..." />
           ) : (
             <div className="w-full overflow-x-auto mb-8">
               <table className="w-full min-w-fit">
@@ -67,40 +101,113 @@ const AdminApprovedCampaigns = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {approvedCampaigns.length > 0 ? (
-                    approvedCampaigns.map((campaign: ApprovedAdsCampaign) => (
-                      <tr
-                        key={campaign.id}
-                        className="border-b border-gray-200 hover:bg-gray-50">
-                        <Td>{campaign.name}</Td>
-                        <Td>{campaign.advertiser}</Td>
-                        <Td>{`${new Date(
-                          Number(campaign.dateCreated)
-                        ).toLocaleDateString("en-GB")}`}</Td>
-                        <Td>
-                          {`${new Date(
-                            Number(campaign.startDate)
-                          ).toLocaleDateString("en-GB")}`}
-                        </Td>
-                        <Td>
-                          {`${new Date(
-                            Number(campaign.endDate)
-                          ).toLocaleDateString("en-GB")}`}
-                        </Td>
-                        <Td>${campaign.budget}</Td>
-                        <Td>
-                          <Button
-                            text="View"
-                            onClick={() => handleViewCampaign(campaign)}
-                            className="bg-blue-500 text-white rounded px-4 py-2"
-                          />
-                        </Td>
-                      </tr>
-                    ))
+                  {approvedAdsCampaigns.length > 0 ? (
+                    approvedAdsCampaigns.map(
+                      (campaign: ApprovedAdsCampaign) => (
+                        <tr
+                          key={campaign.id}
+                          className="border-b border-gray-200 hover:bg-gray-50">
+                          <Td>{campaign.name}</Td>
+                          <Td>{campaign.advertiser}</Td>
+                          <Td>{`${new Date(
+                            Number(campaign.dateCreated)
+                          ).toLocaleDateString("en-GB")}`}</Td>
+                          <Td>
+                            {`${new Date(
+                              Number(campaign.startDate)
+                            ).toLocaleDateString("en-GB")}`}
+                          </Td>
+                          <Td>
+                            {`${new Date(
+                              Number(campaign.endDate)
+                            ).toLocaleDateString("en-GB")}`}
+                          </Td>
+                          <Td>${campaign.budget}</Td>
+                          <Td>
+                            <Button
+                              text="View"
+                              onClick={() =>
+                                handleViewCampaign(campaign, "ads")
+                              }
+                              className="bg-blue-500 text-white rounded px-4 py-2"
+                            />
+                          </Td>
+                        </tr>
+                      )
+                    )
                   ) : (
                     <tr className="border-b border-gray-200 hover:bg-gray-50">
                       <Td colSpan={7} align="center">
-                        No approved campaigns found.
+                        No approved ads campaigns found.
+                      </Td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Roulette Campaigns Section */}
+          <h2 className="text-lg mb-4 font-bold text-theme-gray">
+            Roulette Campaigns
+          </h2>
+          {loadingApprovedRouletteCampaigns ? (
+            <Loader text="Loading Approved Roulette Campaigns..." />
+          ) : (
+            <div className="w-full overflow-x-auto mb-8">
+              <table className="w-full min-w-fit">
+                <thead>
+                  <tr>
+                    <Th>Name</Th>
+                    <Th>Advertiser</Th>
+                    <Th>Date Created</Th>
+                    <Th>Start Date</Th>
+                    <Th>End Date</Th>
+                    <Th>Main Prize</Th>
+                    <Th>Budget</Th>
+                    <Th>Action</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {approvedRouletteCampaigns.length > 0 ? (
+                    approvedRouletteCampaigns.map(
+                      (campaign: ApprovedRouletteCampaign) => (
+                        <tr
+                          key={campaign.id}
+                          className="border-b border-gray-200 hover:bg-gray-50">
+                          <Td>{campaign.name}</Td>
+                          <Td>{campaign.advertiser}</Td>
+                          <Td>{`${new Date(
+                            Number(campaign.dateCreated)
+                          ).toLocaleDateString("en-GB")}`}</Td>
+                          <Td>
+                            {`${new Date(
+                              Number(campaign.startDate)
+                            ).toLocaleDateString("en-GB")}`}
+                          </Td>
+                          <Td>
+                            {`${new Date(
+                              Number(campaign.endDate)
+                            ).toLocaleDateString("en-GB")}`}
+                          </Td>
+                          <Td>{campaign.mainPrize}</Td>
+                          <Td>${campaign.budget}</Td>
+                          <Td>
+                            <Button
+                              text="View"
+                              onClick={() =>
+                                handleViewCampaign(campaign, "roulette")
+                              }
+                              className="bg-blue-500 text-white rounded px-4 py-2"
+                            />
+                          </Td>
+                        </tr>
+                      )
+                    )
+                  ) : (
+                    <tr className="border-b border-gray-200 hover:bg-gray-50">
+                      <Td colSpan={8} align="center">
+                        No approved roulette campaigns found.
                       </Td>
                     </tr>
                   )}
@@ -142,6 +249,53 @@ const AdminApprovedCampaigns = () => {
             <p>
               <strong>Budget:</strong> ${selectedCampaign.budget}
             </p>
+
+            {campaignType === "roulette" && (
+              <>
+                <p>
+                  <strong>Main Prize:</strong>{" "}
+                  {(selectedCampaign as ApprovedRouletteCampaign).mainPrize}
+                </p>
+                <p>
+                  <strong>Main Prize Amount:</strong> $
+                  {
+                    (selectedCampaign as ApprovedRouletteCampaign)
+                      .mainPrizeAmount
+                  }
+                </p>
+                {(selectedCampaign as ApprovedRouletteCampaign).secPrize1 && (
+                  <p>
+                    <strong>Secondary Prize 1:</strong>{" "}
+                    {(selectedCampaign as ApprovedRouletteCampaign).secPrize1}
+                    {(selectedCampaign as ApprovedRouletteCampaign).amount1 &&
+                      ` ($${
+                        (selectedCampaign as ApprovedRouletteCampaign).amount1
+                      })`}
+                  </p>
+                )}
+                {(selectedCampaign as ApprovedRouletteCampaign).secPrize2 && (
+                  <p>
+                    <strong>Secondary Prize 2:</strong>{" "}
+                    {(selectedCampaign as ApprovedRouletteCampaign).secPrize2}
+                    {(selectedCampaign as ApprovedRouletteCampaign).amount2 &&
+                      ` ($${
+                        (selectedCampaign as ApprovedRouletteCampaign).amount2
+                      })`}
+                  </p>
+                )}
+                {(selectedCampaign as ApprovedRouletteCampaign).secPrize3 && (
+                  <p>
+                    <strong>Secondary Prize 3:</strong>{" "}
+                    {(selectedCampaign as ApprovedRouletteCampaign).secPrize3}
+                    {(selectedCampaign as ApprovedRouletteCampaign).amount3 &&
+                      ` ($${
+                        (selectedCampaign as ApprovedRouletteCampaign).amount3
+                      })`}
+                  </p>
+                )}
+              </>
+            )}
+
             <div className="mt-4 flex justify-end">
               <Button text="Close" onClick={() => setIsModalOpen(false)} />
             </div>
