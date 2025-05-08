@@ -10,7 +10,7 @@ import { useState } from "react";
 import Button from "../../components/general/Button";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 import { useQuery } from "@apollo/client";
-import { GET_ADS_CAMPAIGNS_COUNT } from "../../graphql/adsCampaign";
+import { GET_CAMPAIGNS_COUNT } from "../../graphql/campaignsCount";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -149,9 +149,8 @@ const ChartCard = ({
 };
 
 const AdvertiserDashboard = () => {
-  const { data: campaignsCountData, loading: loadingCampaignsCount } = useQuery(
-    GET_ADS_CAMPAIGNS_COUNT
-  );
+  const { data: campaignsCountData, loading: loadingCampaignsCount } =
+    useQuery(GET_CAMPAIGNS_COUNT);
 
   const dashboardData = {
     totalClicks: 1200,
@@ -159,9 +158,9 @@ const AdvertiserDashboard = () => {
     averageClicksPerCampaign: 150,
     averageViewsPerCampaign: 375,
     campaigns: {
-      pending: campaignsCountData?.getAdsCampaignsCount?.pending || 0,
-      approved: campaignsCountData?.getAdsCampaignsCount?.approved || 0,
-      rejected: campaignsCountData?.getAdsCampaignsCount?.rejected || 0,
+      pending: campaignsCountData?.getCampaignsCount?.pending || 0,
+      approved: campaignsCountData?.getCampaignsCount?.approved || 0,
+      rejected: campaignsCountData?.getCampaignsCount?.rejected || 0,
     },
   };
 

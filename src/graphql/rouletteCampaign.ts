@@ -22,26 +22,6 @@ export const GET_ROULETTE_CAMPAIGNS = gql`
   }
 `;
 
-export const GET_ROULETTE_CAMPAIGNS_COUNT = gql`
-  query GetRouletteCampaignsCount {
-    getRouletteCampaignsCount {
-      pending
-      approved
-      rejected
-    }
-  }
-`;
-
-export const GET_ALL_ROULETTE_CAMPAIGNS_COUNT = gql`
-  query GetAllRouletteCampaignsCount {
-    getAllRouletteCampaignsCount {
-      pending
-      approved
-      rejected
-    }
-  }
-`;
-
 export const CREATE_ROULETTE_CAMPAIGN = gql`
   mutation CreateRouletteCampaign(
     $name: String!

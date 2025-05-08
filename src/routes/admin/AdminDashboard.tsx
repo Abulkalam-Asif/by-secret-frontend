@@ -12,7 +12,7 @@ import { Payload } from "recharts/types/component/DefaultLegendContent";
 import { useUser } from "../../contexts/UserContext";
 import { useQuery } from "@apollo/client";
 import { GET_ADVERTISERS_COUNT } from "../../graphql/advertiserAuth";
-import { GET_ALL_ADS_CAMPAIGNS_COUNT } from "../../graphql/adsCampaign";
+import { GET_ALL_CAMPAIGNS_COUNT } from "../../graphql/campaignsCount";
 
 // Define types for chart data
 interface ChartDataItem {
@@ -181,7 +181,7 @@ const AdminDashboard = () => {
   );
 
   const { data: campaignsCountData, loading: loadingCampaignsCount } = useQuery(
-    GET_ALL_ADS_CAMPAIGNS_COUNT
+    GET_ALL_CAMPAIGNS_COUNT
   );
 
   const { email } = useUser();
@@ -214,12 +214,12 @@ const AdminDashboard = () => {
       setDashboardData((prevData) => ({
         ...prevData,
         totalCampaigns:
-          campaignsCountData.getAllAdsCampaignsCount.pending +
-          campaignsCountData.getAllAdsCampaignsCount.approved +
-          campaignsCountData.getAllAdsCampaignsCount.rejected,
-        scheduledCampaigns: campaignsCountData.getAllAdsCampaignsCount.pending,
-        runningCampaigns: campaignsCountData.getAllAdsCampaignsCount.approved,
-        completedCampaigns: campaignsCountData.getAllAdsCampaignsCount.rejected,
+          campaignsCountData.getAllCampaignsCount.pending +
+          campaignsCountData.getAllCampaignsCount.approved +
+          campaignsCountData.getAllCampaignsCount.rejected,
+        scheduledCampaigns: campaignsCountData.getAllCampaignsCount.pending,
+        runningCampaigns: campaignsCountData.getAllCampaignsCount.approved,
+        completedCampaigns: campaignsCountData.getAllCampaignsCount.rejected,
       }));
     }
   }, [campaignsCountData, loadingCampaignsCount]);
