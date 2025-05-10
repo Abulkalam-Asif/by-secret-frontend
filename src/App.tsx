@@ -19,6 +19,7 @@ import AdvertiserLogin from "./routes/advertiser/AdvertiserLogin";
 import AdminRejectedCampaigns from "./routes/admin/AdminRejectedCampaigns";
 import AdvAdsCampaigns from "./routes/advertiser/AdvAdsCampaigns";
 import AdvRouletteCampaigns from "./routes/advertiser/AdvRouletteCampaigns";
+import AdvSettings from "./routes/advertiser/AdvSettings";
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
             path="/advertiser/roulette-campaigns"
             element={<AdvRouletteCampaigns />}
           />
+          <Route path="/advertiser/settings" element={<AdvSettings />} />
         </Route>
       </Routes>
     </>

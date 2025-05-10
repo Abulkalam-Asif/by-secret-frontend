@@ -47,7 +47,7 @@ const AdvertiserSidebar = ({
     },
     {
       name: "My Settings",
-      href: "/advertiser/my-settings",
+      href: "/advertiser/settings",
       icon: <FiSettings size={16} />,
     },
     {
