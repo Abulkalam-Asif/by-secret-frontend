@@ -85,6 +85,11 @@ const AdminSidebar = ({
       href: "/admin/rejected-campaigns",
       icon: <MdCancel size={16} />,
     },
+    {
+      name: "Invoices",
+      href: "/admin/invoices",
+      icon: <BiBook size={16} />,
+    },
   ];
 
   const logoutHandler = async () => {

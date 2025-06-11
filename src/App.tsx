@@ -20,6 +20,7 @@ import AdminRejectedCampaigns from "./routes/admin/AdminRejectedCampaigns";
 import AdvAdsCampaigns from "./routes/advertiser/AdvAdsCampaigns";
 import AdvRouletteCampaigns from "./routes/advertiser/AdvRouletteCampaigns";
 import AdvSettings from "./routes/advertiser/AdvSettings";
+import AdminInvoices from "./routes/admin/AdminInvoices";
 
 function App() {
   return (
@@ -49,19 +50,14 @@ function App() {
             path="rejected-campaigns"
             element={<AdminRejectedCampaigns />}
           />
+          <Route path="invoices" element={<AdminInvoices />} />
         </Route>
 
         <Route path="advertiser" element={<AdvertiserLayout />}>
           <Route index element={<AdvertiserDashboard />} />
-          <Route
-            path="/advertiser/ads-campaigns"
-            element={<AdvAdsCampaigns />}
-          />
-          <Route
-            path="/advertiser/roulette-campaigns"
-            element={<AdvRouletteCampaigns />}
-          />
-          <Route path="/advertiser/settings" element={<AdvSettings />} />
+          <Route path="ads-campaigns" element={<AdvAdsCampaigns />} />
+          <Route path="roulette-campaigns" element={<AdvRouletteCampaigns />} />
+          <Route path="settings" element={<AdvSettings />} />
         </Route>
       </Routes>
     </>
