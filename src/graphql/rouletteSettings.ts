@@ -5,8 +5,7 @@ export const GET_ROULETTE_SETTINGS = gql`
     getRouletteSettings {
       costPerView
       costPerClick
-      rewardPerView
-      rewardPerClick
+      neoDollarsCost
     }
   }
 `;
@@ -15,14 +14,12 @@ export const UPDATE_ROULETTE_SETTINGS = gql`
   mutation UpdateRouletteSettings(
     $costPerView: Float
     $costPerClick: Float
-    $rewardPerView: Float
-    $rewardPerClick: Float
+    $neoDollarsCost: Float
   ) {
     updateRouletteSettings(
       costPerView: $costPerView
       costPerClick: $costPerClick
-      rewardPerView: $rewardPerView
-      rewardPerClick: $rewardPerClick
+      neoDollarsCost: $neoDollarsCost
     ) {
       success
       message

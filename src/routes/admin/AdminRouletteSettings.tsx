@@ -12,15 +12,13 @@ import Loader from "../../components/general/Loader";
 interface RouletteSettingsData {
   costPerView: number;
   costPerClick: number;
-  rewardPerView: number;
-  rewardPerClick: number;
+  neoDollarsCost: number;
 }
 
 const defaultRouletteSettings: RouletteSettingsData = {
   costPerView: 0,
   costPerClick: 0,
-  rewardPerView: 0,
-  rewardPerClick: 0,
+  neoDollarsCost: 0,
 };
 
 const AdminRouletteSettings = () => {
@@ -59,10 +57,7 @@ const AdminRouletteSettings = () => {
     if (settings.costPerClick < 0) {
       return "Cost per click cannot be negative";
     }
-    if (settings.rewardPerView < 0) {
-      return "Reward per view cannot be negative";
-    }
-    if (settings.rewardPerClick < 0) {
+    if (settings.neoDollarsCost < 0) {
       return "Reward per click cannot be negative";
     }
     return "";
@@ -84,8 +79,7 @@ const AdminRouletteSettings = () => {
         variables: {
           costPerView: settings.costPerView,
           costPerClick: settings.costPerClick,
-          rewardPerView: settings.rewardPerView,
-          rewardPerClick: settings.rewardPerClick,
+          neoDollarsCost: settings.neoDollarsCost,
         },
       });
 
@@ -176,35 +170,13 @@ const AdminRouletteSettings = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Rewards for users per view
+                    Neo Dollars Cost
                   </label>
                   <InputBox
-                    name="rewardPerView"
-                    id="rewardPerView"
+                    name="neoDollarsCost"
+                    id="neoDollarsCost"
                     type="number"
-                    value={settings.rewardPerView}
-                    placeholder="0.005"
-                    onChange={handleChange}
-                    required={true}
-                    disabled={updateLoading}
-                    className=""
-                    step="0.00001"
-                    min="0"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Current value: {formatCurrency(settings.rewardPerView)} USD
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Rewards for users per click
-                  </label>
-                  <InputBox
-                    name="rewardPerClick"
-                    id="rewardPerClick"
-                    type="number"
-                    value={settings.rewardPerClick}
+                    value={settings.neoDollarsCost}
                     placeholder="0.02"
                     onChange={handleChange}
                     required={true}
@@ -214,7 +186,7 @@ const AdminRouletteSettings = () => {
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Current value: {formatCurrency(settings.rewardPerClick)} USD
+                    Current value: {formatCurrency(settings.neoDollarsCost)} USD
                   </p>
                 </div>
               </div>
