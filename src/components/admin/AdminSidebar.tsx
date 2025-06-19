@@ -46,12 +46,12 @@ const AdminSidebar = ({
       icon: <BiUser size={16} />,
     },
     {
-      name: "Ads Settings",
+      name: "By Secret",
       href: "/admin/ads-settings",
       icon: <RiAdvertisementLine size={16} />,
     },
     {
-      name: "Roulette Settings",
+      name: "Spin Wing",
       href: "/admin/roulette-settings",
       icon: <GiPokerHand size={16} />,
     },
@@ -126,7 +126,7 @@ const AdminSidebar = ({
         <div className="w-max flex items-center justify-between p-4 border-b-2 border-theme-light-gray">
           <div
             className={`grid ${
-              isSidebarCollapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr] pr-1"
+              isSidebarCollapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr] pr-1  "
             } transition-grid-cols duration-300`}>
             <div className={`overflow-hidden`}>
               <h2 className="whitespace-nowrap font-bold text-theme-dark-gray">

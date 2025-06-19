@@ -36,12 +36,12 @@ const AdvertiserSidebar = ({
       icon: <AiOutlineDashboard size={16} />,
     },
     {
-      name: "Ads Campaigns",
+      name: "By Secret",
       href: "/advertiser/ads-campaigns",
       icon: <RiAdvertisementLine size={16} />,
     },
     {
-      name: "Roulette Campaigns",
+      name: "Spin Wing",
       href: "/advertiser/roulette-campaigns",
       icon: <GiPokerHand size={16} />,
     },
