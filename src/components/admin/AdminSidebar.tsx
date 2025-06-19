@@ -126,11 +126,11 @@ const AdminSidebar = ({
         <div className="w-max flex items-center justify-between p-4 border-b-2 border-theme-light-gray">
           <div
             className={`grid ${
-              isSidebarCollapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr] pr-3"
+              isSidebarCollapsed ? "grid-cols-[0fr]" : "grid-cols-[1fr] pr-1"
             } transition-grid-cols duration-300`}>
             <div className={`overflow-hidden`}>
-              <h2 className="whitespace-nowrap text-xl font-bold text-theme-dark-gray">
-                By Secret - Admin
+              <h2 className="whitespace-nowrap font-bold text-theme-dark-gray">
+                Epic Platforms Media Admin
               </h2>
             </div>
           </div>
