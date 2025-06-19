@@ -216,6 +216,27 @@ const AdvertiserDashboard = () => {
         </div>
         <div className="md:col-span-4">
           <StatCard
+            title="Total Approved Campaigns"
+            value={dashboardData.campaigns.approved}
+            subtitle="Approved campaigns"
+          />
+        </div>
+        <div className="md:col-span-4">
+          <StatCard
+            title="Total Pending Campaigns"
+            value={dashboardData.campaigns.pending}
+            subtitle="Pending campaigns"
+          />
+        </div>
+        <div className="md:col-span-4">
+          <StatCard
+            title="Total Rejected Campaigns"
+            value={dashboardData.campaigns.rejected}
+            subtitle="Rejected campaigns"
+          />
+        </div>
+        <div className="md:col-span-4">
+          <StatCard
             title="Total Views"
             value={dashboardData.totalViews}
             subtitle="All ad impressions"
