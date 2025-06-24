@@ -12,10 +12,8 @@ export const GET_ADMIN_GENERAL_SETTINGS = gql`
       state
       country
       zipCode
-      stripeTestPublishableKey
-      stripeTestSecretKey
-      stripeLivePublishableKey
-      stripeLiveSecretKey
+      stripePublishableKey
+      stripeSecretKey
       googleMapsApiKey
       oneLoginPublishableKey
       oneLoginPrivateKey
@@ -42,10 +40,8 @@ export const UPDATE_ADMIN_GENERAL_SETTINGS = gql`
     $state: String
     $country: String
     $zipCode: String
-    $stripeTestPublishableKey: String
-    $stripeTestSecretKey: String
-    $stripeLivePublishableKey: String
-    $stripeLiveSecretKey: String
+    $stripePublishableKey: String
+    $stripeSecretKey: String
     $googleMapsApiKey: String
     $oneLoginPublishableKey: String
     $oneLoginPrivateKey: String
@@ -68,10 +64,8 @@ export const UPDATE_ADMIN_GENERAL_SETTINGS = gql`
       state: $state
       country: $country
       zipCode: $zipCode
-      stripeTestPublishableKey: $stripeTestPublishableKey
-      stripeTestSecretKey: $stripeTestSecretKey
-      stripeLivePublishableKey: $stripeLivePublishableKey
-      stripeLiveSecretKey: $stripeLiveSecretKey
+      stripePublishableKey: $stripePublishableKey
+      stripeSecretKey: $stripeSecretKey
       googleMapsApiKey: $googleMapsApiKey
       oneLoginPublishableKey: $oneLoginPublishableKey
       oneLoginPrivateKey: $oneLoginPrivateKey

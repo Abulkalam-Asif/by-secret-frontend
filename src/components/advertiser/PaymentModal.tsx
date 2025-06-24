@@ -15,7 +15,7 @@ import {
 } from "../../graphql/invoice";
 import { useAlert } from "../../contexts/AlertContext";
 import { AlertType } from "../../types";
-import { GET_STRIPE_TEST_PUBLISHABLE_KEY } from "../../graphql/stripeKey";
+import { GET_STRIPE_PUBLISHABLE_KEY } from "../../graphql/stripeKey";
 import Loader from "../general/Loader";
 
 type InvoiceType = {
@@ -176,14 +176,14 @@ const PaymentModal = ({
     data,
     loading: loadingStripeKey,
     error: stripeKeyError,
-  } = useQuery(GET_STRIPE_TEST_PUBLISHABLE_KEY, {
+  } = useQuery(GET_STRIPE_PUBLISHABLE_KEY, {
     errorPolicy: "all", // This allows us to handle both data and errors
     notifyOnNetworkStatusChange: true,
   });
 
   const stripePublishableKey = useMemo(
-    () => data?.getStripeTestPublishableKey || "",
-    [data?.getStripeTestPublishableKey]
+    () => data?.getStripePublishableKey || "",
+    [data?.getStripePublishableKey]
   );
   const stripePromise = useMemo(() => {
     if (stripePublishableKey && stripePublishableKey.trim() !== "") {

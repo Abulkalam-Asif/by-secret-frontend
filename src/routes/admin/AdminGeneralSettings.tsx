@@ -26,10 +26,8 @@ const defaultSettings = {
   state: "",
   country: "",
   zipCode: "",
-  stripeTestPublishableKey: "",
-  stripeTestSecretKey: "",
-  stripeLivePublishableKey: "",
-  stripeLiveSecretKey: "",
+  stripePublishableKey: "",
+  stripeSecretKey: "",
   googleMapsApiKey: "",
   oneLoginPublishableKey: "",
   oneLoginPrivateKey: "",
@@ -288,42 +286,22 @@ const AdminGeneralSettings = () => {
             <hr className="my-8 border-gray-200" />
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <InputBox
-                label="Stripe Test Publishable Key"
-                value={settings.stripeTestPublishableKey}
+                label="Stripe Publishable Key"
+                value={settings.stripePublishableKey}
                 onChange={settingsInputHandler}
-                placeholder="Stripe Test Publishable Key"
-                id="stripeTestPublishableKey"
-                name="stripeTestPublishableKey"
+                placeholder="Stripe Publishable Key"
+                id="stripePublishableKey"
+                name="stripePublishableKey"
                 type="text"
                 disabled={false}
               />
               <InputBox
-                label="Stripe Test Secret Key"
-                value={settings.stripeTestSecretKey}
+                label="Stripe Secret Key"
+                value={settings.stripeSecretKey}
                 onChange={settingsInputHandler}
-                placeholder="Stripe Test Secret Key"
-                id="stripeTestSecretKey"
-                name="stripeTestSecretKey"
-                type="text"
-                disabled={false}
-              />
-              <InputBox
-                label="Stripe Live Publishable Key"
-                value={settings.stripeLivePublishableKey}
-                onChange={settingsInputHandler}
-                placeholder="Stripe Live Publishable Key"
-                id="stripeLivePublishableKey"
-                name="stripeLivePublishableKey"
-                type="text"
-                disabled={false}
-              />
-              <InputBox
-                label="Stripe Live Secret Key"
-                value={settings.stripeLiveSecretKey}
-                onChange={settingsInputHandler}
-                placeholder="Stripe Live Secret Key"
-                id="stripeLiveSecretKey"
-                name="stripeLiveSecretKey"
+                placeholder="Stripe Secret Key"
+                id="stripeSecretKey"
+                name="stripeSecretKey"
                 type="text"
                 disabled={false}
               />
