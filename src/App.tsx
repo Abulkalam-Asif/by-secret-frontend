@@ -6,6 +6,7 @@ import AdminDashboard from "./routes/admin/AdminDashboard";
 import Home from "./routes/Home";
 import AdminUsers from "./routes/admin/AdminUsers";
 import AdminAdsSettings from "./routes/admin/AdminAdsSettings";
+import AdminBemidiaAdsSettings from "./routes/admin/AdminBemidiaAdsSettings";
 import AdminGeneralSettings from "./routes/admin/AdminGeneralSettings";
 import AdminAdvertisers from "./routes/admin/AdminAdvertisers";
 import AdvRegister from "./routes/advertiser/advRegister/AdvRegister";
@@ -21,6 +22,7 @@ import AdvAdsCampaigns from "./routes/advertiser/AdvAdsCampaigns";
 import AdvRouletteCampaigns from "./routes/advertiser/AdvRouletteCampaigns";
 import AdvSettings from "./routes/advertiser/AdvSettings";
 import AdminInvoices from "./routes/admin/AdminInvoices";
+import AdvertiserInvoices from "./routes/advertiser/AdvertiserInvoices";
 
 function App() {
   return (
@@ -37,6 +39,10 @@ function App() {
           <Route path="wiki" element={<AdminWiki />} />
           <Route path="admin-users" element={<AdminUsers />} />
           <Route path="ads-settings" element={<AdminAdsSettings />} />
+          <Route
+            path="bemidia-ads-settings"
+            element={<AdminBemidiaAdsSettings />}
+          />
           <Route path="roulette-settings" element={<AdminRouletteSettings />} />
           <Route path="general-settings" element={<AdminGeneralSettings />} />
           <Route path="email-templates" element={<AdminEmailTemplates />} />
@@ -58,6 +64,7 @@ function App() {
           <Route path="ads-campaigns" element={<AdvAdsCampaigns />} />
           <Route path="roulette-campaigns" element={<AdvRouletteCampaigns />} />
           <Route path="settings" element={<AdvSettings />} />
+          <Route path="invoices" element={<AdvertiserInvoices />} />
         </Route>
       </Routes>
     </>

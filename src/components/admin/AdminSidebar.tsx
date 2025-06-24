@@ -51,6 +51,11 @@ const AdminSidebar = ({
       icon: <RiAdvertisementLine size={16} />,
     },
     {
+      name: "BeMidia Ads",
+      href: "/admin/bemidia-ads-settings",
+      icon: <RiAdvertisementLine size={16} />,
+    },
+    {
       name: "Spin Wing",
       href: "/admin/roulette-settings",
       icon: <GiPokerHand size={16} />,
