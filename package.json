@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.5",
+    "@stripe/react-stripe-js": "^3.7.0",
+    "@stripe/stripe-js": "^7.3.1",
     "@tailwindcss/vite": "^4.0.15",
     "graphql": "^16.10.0",
     "jodit-react": "^5.2.15",

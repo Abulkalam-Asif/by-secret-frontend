@@ -51,8 +51,8 @@ const AdvertiserSidebar = ({
       icon: <FiSettings size={16} />,
     },
     {
-      name: "Billing",
-      href: "/advertiser/billing",
+      name: "Invoices",
+      href: "/advertiser/invoices",
       icon: <BiBook size={16} />,
     },
   ];
