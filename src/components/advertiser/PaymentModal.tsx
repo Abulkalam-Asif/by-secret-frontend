@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   CardElement,
@@ -8,18 +8,15 @@ import {
 } from "@stripe/react-stripe-js";
 import Modal from "../general/Modal";
 import Button from "../general/Button";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   GET_INVOICES_FOR_ADVERTISER,
   PAY_INVOICE,
 } from "../../graphql/invoice";
 import { useAlert } from "../../contexts/AlertContext";
 import { AlertType } from "../../types";
-
-// Load the Stripe instance with your publishable test key
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_TEST_PUBLISHABLE_KEY || ""
-);
+import { GET_STRIPE_TEST_PUBLISHABLE_KEY } from "../../graphql/stripeKey";
+import Loader from "../general/Loader";
 
 type InvoiceType = {
   id: string;
@@ -44,6 +41,7 @@ const PaymentForm = ({
   const [payInvoice] = useMutation(PAY_INVOICE, {
     refetchQueries: [GET_INVOICES_FOR_ADVERTISER],
   });
+
   const { showAlert } = useAlert();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,6 +172,117 @@ const PaymentModal = ({
   closeModal,
   onPaymentSuccess,
 }: PaymentModalProps) => {
+  const {
+    data,
+    loading: loadingStripeKey,
+    error: stripeKeyError,
+  } = useQuery(GET_STRIPE_TEST_PUBLISHABLE_KEY, {
+    errorPolicy: "all", // This allows us to handle both data and errors
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const stripePublishableKey = useMemo(
+    () => data?.getStripeTestPublishableKey || "",
+    [data?.getStripeTestPublishableKey]
+  );
+  const stripePromise = useMemo(() => {
+    if (stripePublishableKey && stripePublishableKey.trim() !== "") {
+      return loadStripe(stripePublishableKey);
+    }
+    return null;
+  }, [stripePublishableKey]);
+
+  // Show loading state while fetching Stripe key
+  if (loadingStripeKey) {
+    return (
+      <Modal closeModal={closeModal}>
+        <div className="text-center py-8">
+          <Loader text="Loading payment options... Please wait." />
+        </div>
+      </Modal>
+    );
+  }
+
+  // Handle GraphQL errors
+  if (stripeKeyError) {
+    return (
+      <Modal closeModal={closeModal}>
+        <div className="text-center py-8">
+          <div className="text-red-600 mb-4">
+            <svg
+              className="w-12 h-12 mx-auto mb-2"
+              fill="currentColor"
+              viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <h3 className="text-lg font-semibold">Connection Error</h3>
+          </div>{" "}
+          <p className="text-gray-600 mb-4">
+            Unable to connect to payment service. Please contact support if this
+            issue persists.
+          </p>
+          <Button
+            type="button"
+            onClick={closeModal}
+            text="Close"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800"
+          />
+        </div>
+      </Modal>
+    );
+  }
+  // Handle missing, empty, or invalid Stripe key
+  if (!stripePublishableKey || stripePublishableKey.trim() === "") {
+    return (
+      <Modal closeModal={closeModal}>
+        <div className="text-center py-8">
+          <div className="text-red-600 mb-4">
+            <svg
+              className="w-12 h-12 mx-auto mb-2"
+              fill="currentColor"
+              viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <h3 className="text-lg font-semibold">
+              Payment Configuration Error
+            </h3>
+          </div>{" "}
+          <p className="text-gray-600 mb-4">
+            {!stripePublishableKey || stripePublishableKey.trim() === ""
+              ? "Payment processing is not configured. Please contact support."
+              : "Invalid payment configuration detected. Please contact support."}
+          </p>
+          <Button
+            type="button"
+            onClick={closeModal}
+            text="Close"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800"
+          />
+        </div>
+      </Modal>
+    );
+  }
+
+  // Handle Stripe promise not being created
+  if (!stripePromise) {
+    return (
+      <Modal closeModal={closeModal}>
+        <div className="text-center py-8">
+          <Loader text="Initializing payment system..." />
+        </div>
+      </Modal>
+    );
+  }
+
+  // Render the payment form when everything is ready
   return (
     <Modal closeModal={closeModal}>
       <Elements stripe={stripePromise}>

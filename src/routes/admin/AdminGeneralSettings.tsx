@@ -26,8 +26,10 @@ const defaultSettings = {
   state: "",
   country: "",
   zipCode: "",
-  stripePublishableKey: "",
-  stripePrivateKey: "",
+  stripeTestPublishableKey: "",
+  stripeTestSecretKey: "",
+  stripeLivePublishableKey: "",
+  stripeLiveSecretKey: "",
   googleMapsApiKey: "",
   oneLoginPublishableKey: "",
   oneLoginPrivateKey: "",
@@ -147,6 +149,7 @@ const AdminGeneralSettings = () => {
           <form>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <InputBox
+                label="Company Name"
                 value={settings.companyName}
                 onChange={settingsInputHandler}
                 placeholder="Company Name"
@@ -172,6 +175,7 @@ const AdminGeneralSettings = () => {
                 )}
               </div>
               <InputBox
+                label="Phone"
                 value={settings.phone}
                 onChange={settingsInputHandler}
                 placeholder="Phone"
@@ -181,6 +185,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="Email"
                 value={settings.email}
                 onChange={settingsInputHandler}
                 placeholder="Email"
@@ -190,6 +195,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="Address"
                 value={settings.address}
                 onChange={settingsInputHandler}
                 placeholder="Address"
@@ -199,6 +205,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="City"
                 value={settings.city}
                 onChange={settingsInputHandler}
                 placeholder="City"
@@ -208,6 +215,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="State"
                 value={settings.state}
                 onChange={settingsInputHandler}
                 placeholder="State"
@@ -217,6 +225,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="Country"
                 value={settings.country}
                 onChange={settingsInputHandler}
                 placeholder="Country"
@@ -226,6 +235,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="Zip Code"
                 value={settings.zipCode}
                 onChange={settingsInputHandler}
                 placeholder="Zip Code"
@@ -278,24 +288,47 @@ const AdminGeneralSettings = () => {
             <hr className="my-8 border-gray-200" />
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <InputBox
-                value={settings.stripePublishableKey}
+                label="Stripe Test Publishable Key"
+                value={settings.stripeTestPublishableKey}
                 onChange={settingsInputHandler}
-                placeholder="Stripe Publishable Key"
-                id="stripePublishableKey"
-                name="stripePublishableKey"
+                placeholder="Stripe Test Publishable Key"
+                id="stripeTestPublishableKey"
+                name="stripeTestPublishableKey"
                 type="text"
                 disabled={false}
               />
               <InputBox
-                value={settings.stripePrivateKey}
+                label="Stripe Test Secret Key"
+                value={settings.stripeTestSecretKey}
                 onChange={settingsInputHandler}
-                placeholder="Stripe Private Key"
-                id="stripePrivateKey"
-                name="stripePrivateKey"
+                placeholder="Stripe Test Secret Key"
+                id="stripeTestSecretKey"
+                name="stripeTestSecretKey"
                 type="text"
                 disabled={false}
               />
               <InputBox
+                label="Stripe Live Publishable Key"
+                value={settings.stripeLivePublishableKey}
+                onChange={settingsInputHandler}
+                placeholder="Stripe Live Publishable Key"
+                id="stripeLivePublishableKey"
+                name="stripeLivePublishableKey"
+                type="text"
+                disabled={false}
+              />
+              <InputBox
+                label="Stripe Live Secret Key"
+                value={settings.stripeLiveSecretKey}
+                onChange={settingsInputHandler}
+                placeholder="Stripe Live Secret Key"
+                id="stripeLiveSecretKey"
+                name="stripeLiveSecretKey"
+                type="text"
+                disabled={false}
+              />
+              <InputBox
+                label="Google Maps API Key"
                 value={settings.googleMapsApiKey}
                 onChange={settingsInputHandler}
                 placeholder="Google Maps API Key"
@@ -305,6 +338,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="OneLogin Publishable Key"
                 value={settings.oneLoginPublishableKey}
                 onChange={settingsInputHandler}
                 placeholder="OneLogin Publishable Key"
@@ -314,6 +348,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="OneLogin Private Key"
                 value={settings.oneLoginPrivateKey}
                 onChange={settingsInputHandler}
                 placeholder="OneLogin Private Key"
@@ -323,6 +358,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="SMTP Host"
                 value={settings.smtpHost}
                 onChange={settingsInputHandler}
                 placeholder="SMTP Host"
@@ -332,6 +368,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="SMTP Port"
                 value={settings.smtpPort}
                 onChange={settingsInputHandler}
                 placeholder="SMTP Port"
@@ -341,6 +378,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="SMTP Username"
                 value={settings.smtpUsername}
                 onChange={settingsInputHandler}
                 placeholder="SMTP Username"
@@ -350,6 +388,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="SMTP Password"
                 value={settings.smtpPassword}
                 onChange={settingsInputHandler}
                 placeholder="SMTP Password"
@@ -359,6 +398,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="SMTP From Email"
                 value={settings.smtpFromEmail}
                 onChange={settingsInputHandler}
                 placeholder="SMTP From Email"
@@ -368,6 +408,7 @@ const AdminGeneralSettings = () => {
                 disabled={false}
               />
               <InputBox
+                label="SMTP From Name"
                 value={settings.smtpFromName}
                 onChange={settingsInputHandler}
                 placeholder="SMTP From Name"
