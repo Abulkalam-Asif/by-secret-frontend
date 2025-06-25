@@ -14,6 +14,11 @@ import {
   APPROVE_ROULETTE_CAMPAIGN,
   REJECT_ROULETTE_CAMPAIGN,
 } from "../../graphql/pendingCampaigns";
+import {
+  GET_PENDING_BEMIDIA_CAMPAIGNS,
+  APPROVE_BEMIDIA_CAMPAIGN,
+  REJECT_BEMIDIA_CAMPAIGN,
+} from "../../graphql/pendingCampaigns";
 import Loader from "../../components/general/Loader";
 import { useAlert } from "../../contexts/AlertContext";
 
@@ -47,6 +52,21 @@ type PendingRouletteCampaign = {
   budget: string;
 };
 
+type PendingBeMidiaCampaign = {
+  id: number;
+  name: string;
+  advertiser: string;
+  dateRequested: string;
+  days: number;
+  startDate: string;
+  startHour: string;
+  endDate: string;
+  endHour: string;
+  budget: string;
+  media: string;
+  action: string;
+};
+
 const AdminPendingCampaigns = () => {
   const { showAlert } = useAlert();
   const { data: adsData, loading: loadingPendingAdsCampaigns } = useQuery(
@@ -54,6 +74,8 @@ const AdminPendingCampaigns = () => {
   );
   const { data: rouletteData, loading: loadingPendingRouletteCampaigns } =
     useQuery(GET_PENDING_ROULETTE_CAMPAIGNS);
+  const { data: bemidiaData, loading: loadingPendingBeMidiaCampaigns } =
+    useQuery(GET_PENDING_BEMIDIA_CAMPAIGNS);
 
   const pendingAdsCampaigns = useMemo(
     () => adsData?.getPendingAdsCampaigns || [],
@@ -63,14 +85,18 @@ const AdminPendingCampaigns = () => {
     () => rouletteData?.getPendingRouletteCampaigns || [],
     [rouletteData?.getPendingRouletteCampaigns]
   );
+  const pendingBeMidiaCampaigns = useMemo(
+    () => bemidiaData?.getPendingBeMidiaCampaigns || [],
+    [bemidiaData?.getPendingBeMidiaCampaigns]
+  );
 
   const [selectedCampaign, setSelectedCampaign] = useState<
-    PendingAdsCampaign | PendingRouletteCampaign | null
+    PendingAdsCampaign | PendingRouletteCampaign | PendingBeMidiaCampaign | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showRejectionNotes, setShowRejectionNotes] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-  const [campaignType, setCampaignType] = useState<"ads" | "roulette">("ads");
+  const [campaignType, setCampaignType] = useState<"ads" | "roulette" | "bemidia">("ads");
 
   const [approveAdsCampaign] = useMutation(APPROVE_ADS_CAMPAIGN, {
     refetchQueries: [GET_PENDING_ADS_CAMPAIGNS],
@@ -88,9 +114,17 @@ const AdminPendingCampaigns = () => {
     refetchQueries: [GET_PENDING_ROULETTE_CAMPAIGNS],
   });
 
+  const [approveBeMidiaCampaign] = useMutation(APPROVE_BEMIDIA_CAMPAIGN, {
+    refetchQueries: [GET_PENDING_BEMIDIA_CAMPAIGNS],
+  });
+
+  const [rejectBeMidiaCampaign] = useMutation(REJECT_BEMIDIA_CAMPAIGN, {
+    refetchQueries: [GET_PENDING_BEMIDIA_CAMPAIGNS],
+  });
+
   const handleViewCampaign = (
-    campaign: PendingAdsCampaign | PendingRouletteCampaign,
-    type: "ads" | "roulette"
+    campaign: PendingAdsCampaign | PendingRouletteCampaign | PendingBeMidiaCampaign,
+    type: "ads" | "roulette" | "bemidia"
   ) => {
     setSelectedCampaign(campaign);
     setCampaignType(type);
@@ -113,7 +147,7 @@ const AdminPendingCampaigns = () => {
             message: "Ads campaign approved successfully",
           });
         }
-      } else {
+      } else if (campaignType === "roulette") {
         response = await approveRouletteCampaign({
           variables: { id: selectedCampaign.id },
         });
@@ -123,8 +157,18 @@ const AdminPendingCampaigns = () => {
             message: "Roulette campaign approved successfully",
           });
         }
+      } else if (campaignType === "bemidia") {
+        response = await approveBeMidiaCampaign({
+          variables: { id: selectedCampaign.id },
+        });
+        if (response.data.approveBeMidiaCampaign.success) {
+          showAlert({
+            type: "success",
+            message: "BeMidia campaign approved successfully",
+          });
+        }
       }
-    } catch (error) {
+    } catch {
       showAlert({
         type: "error",
         message: "Error approving campaign",
@@ -151,7 +195,7 @@ const AdminPendingCampaigns = () => {
             message: "Ads campaign rejected successfully",
           });
         }
-      } else {
+      } else if (campaignType === "roulette") {
         response = await rejectRouletteCampaign({
           variables: { id: selectedCampaign.id, rejectionReason },
         });
@@ -161,8 +205,18 @@ const AdminPendingCampaigns = () => {
             message: "Roulette campaign rejected successfully",
           });
         }
+      } else if (campaignType === "bemidia") {
+        response = await rejectBeMidiaCampaign({
+          variables: { id: selectedCampaign.id, rejectionReason },
+        });
+        if (response.data.rejectBeMidiaCampaign.success) {
+          showAlert({
+            type: "success",
+            message: "BeMidia campaign rejected successfully",
+          });
+        }
       }
-    } catch (error) {
+    } catch {
       showAlert({
         type: "error",
         message: "Error rejecting campaign",
@@ -322,6 +376,81 @@ const AdminPendingCampaigns = () => {
               </table>
             </div>
           )}
+
+          {/* BeMidia Campaigns Section */}
+          <h2 className="text-lg mb-4 font-bold text-theme-gray">
+            BeMidia Campaigns
+          </h2>
+          {loadingPendingBeMidiaCampaigns ? (
+            <Loader text="Loading Pending BeMidia Campaigns..." />
+          ) : (
+            <div className="w-full overflow-x-auto mb-8">
+              <table className="w-full min-w-fit">
+                <thead>
+                  <tr>
+                    <Th>Name</Th>
+                    <Th>Advertiser</Th>
+                    <Th>Date Requested</Th>
+                    <Th>Days</Th>
+                    <Th>Start Date & Time</Th>
+                    <Th>End Date & Time</Th>
+                    <Th>Budget</Th>
+                    <Th>Media</Th>
+                    <Th>Action</Th>
+                    <Th>View</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingBeMidiaCampaigns.length > 0 ? (
+                    pendingBeMidiaCampaigns.map(
+                      (campaign: PendingBeMidiaCampaign) => (
+                        <tr
+                          key={campaign.id}
+                          className="border-b border-gray-200 hover:bg-gray-50">
+                          <Td>{campaign.name}</Td>
+                          <Td>{campaign.advertiser}</Td>
+                          <Td>{`${new Date(
+                            Number(campaign.dateRequested)
+                          ).toLocaleDateString("en-GB")}`}</Td>
+                          <Td>{campaign.days}</Td>
+                          <Td>{`${new Date(
+                            Number(campaign.startDate)
+                          ).toLocaleDateString("en-GB")} ${campaign.startHour}`}</Td>
+                          <Td>{`${new Date(
+                            Number(campaign.endDate)
+                          ).toLocaleDateString("en-GB")} ${campaign.endHour}`}</Td>
+                          <Td>${campaign.budget}</Td>
+                          <Td>
+                            <img
+                              src={campaign.media}
+                              alt={`${campaign.advertiser}-media`}
+                              className="h-12 w-12 object-cover rounded"
+                            />
+                          </Td>
+                          <Td>{campaign.action}</Td>
+                          <Td>
+                            <Button
+                              text="View"
+                              onClick={() =>
+                                handleViewCampaign(campaign, "bemidia")
+                              }
+                              className="bg-blue-500 text-white rounded px-4 py-2"
+                            />
+                          </Td>
+                        </tr>
+                      )
+                    )
+                  ) : (
+                    <tr className="border-b border-gray-200 hover:bg-gray-50">
+                      <Td colSpan={10} align="center">
+                        No pending BeMidia campaigns found.
+                      </Td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </section>
 
@@ -361,6 +490,33 @@ const AdminPendingCampaigns = () => {
                   <strong>Media:</strong>
                   <img
                     src={(selectedCampaign as PendingAdsCampaign).media}
+                    alt={`${selectedCampaign.advertiser} media`}
+                    className="max-w-full h-auto mt-2 rounded"
+                  />
+                </div>
+              </>
+            ) : campaignType === "bemidia" ? (
+              <>
+                <p>
+                  <strong>Start Date & Time:</strong>{" "}
+                  {`${new Date(
+                    Number((selectedCampaign as PendingBeMidiaCampaign).startDate)
+                  ).toLocaleDateString("en-GB")} at ${(selectedCampaign as PendingBeMidiaCampaign).startHour}`}
+                </p>
+                <p>
+                  <strong>End Date & Time:</strong>{" "}
+                  {`${new Date(
+                    Number((selectedCampaign as PendingBeMidiaCampaign).endDate)
+                  ).toLocaleDateString("en-GB")} at ${(selectedCampaign as PendingBeMidiaCampaign).endHour}`}
+                </p>
+                <p>
+                  <strong>Action:</strong>{" "}
+                  {(selectedCampaign as PendingBeMidiaCampaign).action}
+                </p>
+                <div className="mt-4">
+                  <strong>Media:</strong>
+                  <img
+                    src={(selectedCampaign as PendingBeMidiaCampaign).media}
                     alt={`${selectedCampaign.advertiser} media`}
                     className="max-w-full h-auto mt-2 rounded"
                   />

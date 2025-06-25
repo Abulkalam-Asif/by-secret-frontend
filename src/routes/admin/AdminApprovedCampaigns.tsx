@@ -5,6 +5,7 @@ import Td from "../../components/general/Td";
 import Modal from "../../components/general/Modal";
 import { GET_APPROVED_ADS_CAMPAIGNS } from "../../graphql/approvedCampaigns";
 import { GET_APPROVED_ROULETTE_CAMPAIGNS } from "../../graphql/approvedCampaigns";
+import { GET_APPROVED_BEMIDIA_CAMPAIGNS } from "../../graphql/approvedCampaigns";
 import { useQuery } from "@apollo/client";
 import Loader from "../../components/general/Loader";
 
@@ -36,12 +37,26 @@ type ApprovedRouletteCampaign = {
   budget: string;
 };
 
+type ApprovedBeMidiaCampaign = {
+  id: number;
+  name: string;
+  advertiser: string;
+  dateCreated: string;
+  startDate: string;
+  startHour: string;
+  endDate: string;
+  endHour: string;
+  budget: string;
+};
+
 const AdminApprovedCampaigns = () => {
   const { data: adsData, loading: loadingApprovedAdsCampaigns } = useQuery(
     GET_APPROVED_ADS_CAMPAIGNS
   );
   const { data: rouletteData, loading: loadingApprovedRouletteCampaigns } =
     useQuery(GET_APPROVED_ROULETTE_CAMPAIGNS);
+  const { data: bemidiaData, loading: loadingApprovedBeMidiaCampaigns } =
+    useQuery(GET_APPROVED_BEMIDIA_CAMPAIGNS);
 
   const approvedAdsCampaigns = useMemo(
     () => adsData?.getApprovedAdsCampaigns || [],
@@ -51,16 +66,20 @@ const AdminApprovedCampaigns = () => {
     () => rouletteData?.getApprovedRouletteCampaigns || [],
     [rouletteData?.getApprovedRouletteCampaigns]
   );
+  const approvedBeMidiaCampaigns = useMemo(
+    () => bemidiaData?.getApprovedBeMidiaCampaigns || [],
+    [bemidiaData?.getApprovedBeMidiaCampaigns]
+  );
 
   const [selectedCampaign, setSelectedCampaign] = useState<
-    ApprovedAdsCampaign | ApprovedRouletteCampaign | null
+    ApprovedAdsCampaign | ApprovedRouletteCampaign | ApprovedBeMidiaCampaign | null
   >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [campaignType, setCampaignType] = useState<"ads" | "roulette">("ads");
+  const [campaignType, setCampaignType] = useState<"ads" | "roulette" | "bemidia">("ads");
 
   const handleViewCampaign = (
-    campaign: ApprovedAdsCampaign | ApprovedRouletteCampaign,
-    type: "ads" | "roulette"
+    campaign: ApprovedAdsCampaign | ApprovedRouletteCampaign | ApprovedBeMidiaCampaign,
+    type: "ads" | "roulette" | "bemidia"
   ) => {
     setSelectedCampaign(campaign);
     setCampaignType(type);
@@ -215,6 +234,77 @@ const AdminApprovedCampaigns = () => {
               </table>
             </div>
           )}
+
+          {/* BeMidia Campaigns Section */}
+          <h2 className="text-lg mb-4 font-bold text-theme-gray">
+            BeMidia Campaigns
+          </h2>
+          {loadingApprovedBeMidiaCampaigns ? (
+            <Loader text="Loading Approved BeMidia Campaigns..." />
+          ) : (
+            <div className="w-full overflow-x-auto mb-8">
+              <table className="w-full min-w-fit">
+                <thead>
+                  <tr>
+                    <Th>Name</Th>
+                    <Th>Advertiser</Th>
+                    <Th>Date Created</Th>
+                    <Th>Start Date</Th>
+                    <Th>Start Hour</Th>
+                    <Th>End Date</Th>
+                    <Th>End Hour</Th>
+                    <Th>Budget</Th>
+                    <Th>Action</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {approvedBeMidiaCampaigns.length > 0 ? (
+                    approvedBeMidiaCampaigns.map(
+                      (campaign: ApprovedBeMidiaCampaign) => (
+                        <tr
+                          key={campaign.id}
+                          className="border-b border-gray-200 hover:bg-gray-50">
+                          <Td>{campaign.name}</Td>
+                          <Td>{campaign.advertiser}</Td>
+                          <Td>{`${new Date(
+                            Number(campaign.dateCreated)
+                          ).toLocaleDateString("en-GB")}`}</Td>
+                          <Td>
+                            {`${new Date(
+                              Number(campaign.startDate)
+                            ).toLocaleDateString("en-GB")}`}
+                          </Td>
+                          <Td>{campaign.startHour}</Td>
+                          <Td>
+                            {`${new Date(
+                              Number(campaign.endDate)
+                            ).toLocaleDateString("en-GB")}`}
+                          </Td>
+                          <Td>{campaign.endHour}</Td>
+                          <Td>${campaign.budget}</Td>
+                          <Td>
+                            <Button
+                              text="View"
+                              onClick={() =>
+                                handleViewCampaign(campaign, "bemidia")
+                              }
+                              className="bg-blue-500 text-white rounded px-4 py-2"
+                            />
+                          </Td>
+                        </tr>
+                      )
+                    )
+                  ) : (
+                    <tr className="border-b border-gray-200 hover:bg-gray-50">
+                      <Td colSpan={9} align="center">
+                        No approved BeMidia campaigns found.
+                      </Td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </section>
 
@@ -293,6 +383,19 @@ const AdminApprovedCampaigns = () => {
                       })`}
                   </p>
                 )}
+              </>
+            )}
+
+            {campaignType === "bemidia" && (
+              <>
+                <p>
+                  <strong>Start Hour:</strong>{" "}
+                  {(selectedCampaign as ApprovedBeMidiaCampaign).startHour}
+                </p>
+                <p>
+                  <strong>End Hour:</strong>{" "}
+                  {(selectedCampaign as ApprovedBeMidiaCampaign).endHour}
+                </p>
               </>
             )}
 

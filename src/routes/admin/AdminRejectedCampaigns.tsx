@@ -6,6 +6,7 @@ import Modal from "../../components/general/Modal";
 import { useQuery } from "@apollo/client";
 import { GET_REJECTED_ADS_CAMPAIGNS } from "../../graphql/rejectedCampaigns";
 import { GET_REJECTED_ROULETTE_CAMPAIGNS } from "../../graphql/rejectedCampaigns";
+import { GET_REJECTED_BEMIDIA_CAMPAIGNS } from "../../graphql/rejectedCampaigns";
 import Loader from "../../components/general/Loader";
 
 // Define rejected campaign type with rejectionReason
@@ -41,12 +42,29 @@ type RejectedRouletteCampaign = {
   rejectionReason: string;
 };
 
+type RejectedBeMidiaCampaign = {
+  id: number;
+  name: string;
+  advertiser: string;
+  dateRequested: string;
+  days: number;
+  startDate: string;
+  startHour: string;
+  endDate: string;
+  endHour: string;
+  budget: string;
+  rejectionReason: string;
+};
+
 const AdminRejectedCampaigns = () => {
   const { data: adsData, loading: loadingRejectedAdsCampaigns } = useQuery(
     GET_REJECTED_ADS_CAMPAIGNS
   );
   const { data: rouletteData, loading: loadingRejectedRouletteCampaigns } = useQuery(
     GET_REJECTED_ROULETTE_CAMPAIGNS
+  );
+  const { data: bemidiaData, loading: loadingRejectedBeMidiaCampaigns } = useQuery(
+    GET_REJECTED_BEMIDIA_CAMPAIGNS
   );
 
   const rejectedAdsCampaigns = useMemo(
@@ -57,12 +75,16 @@ const AdminRejectedCampaigns = () => {
     () => rouletteData?.getRejectedRouletteCampaigns || [],
     [rouletteData?.getRejectedRouletteCampaigns]
   );
+  const rejectedBeMidiaCampaigns = useMemo(
+    () => bemidiaData?.getRejectedBeMidiaCampaigns || [],
+    [bemidiaData?.getRejectedBeMidiaCampaigns]
+  );
 
-  const [selectedCampaign, setSelectedCampaign] = useState<RejectedAdsCampaign | RejectedRouletteCampaign | null>(null);
+  const [selectedCampaign, setSelectedCampaign] = useState<RejectedAdsCampaign | RejectedRouletteCampaign | RejectedBeMidiaCampaign | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [campaignType, setCampaignType] = useState<"ads" | "roulette">("ads");
+  const [campaignType, setCampaignType] = useState<"ads" | "roulette" | "bemidia">("ads");
 
-  const handleViewCampaign = (campaign: RejectedAdsCampaign | RejectedRouletteCampaign, type: "ads" | "roulette") => {
+  const handleViewCampaign = (campaign: RejectedAdsCampaign | RejectedRouletteCampaign | RejectedBeMidiaCampaign, type: "ads" | "roulette" | "bemidia") => {
     setSelectedCampaign(campaign);
     setCampaignType(type);
     setIsModalOpen(true);
@@ -206,6 +228,71 @@ const AdminRejectedCampaigns = () => {
               </table>
             </div>
           )}
+
+          {/* BeMidia Campaigns Section */}
+          <h2 className="text-lg mb-4 font-bold text-theme-gray">
+            BeMidia Campaigns
+          </h2>
+          {loadingRejectedBeMidiaCampaigns ? (
+            <Loader text="Loading Rejected BeMidia Campaigns..." />
+          ) : (
+            <div className="w-full overflow-x-auto mb-8">
+              <table className="w-full min-w-fit">
+                <thead>
+                  <tr>
+                    <Th>Name</Th>
+                    <Th>Advertiser</Th>
+                    <Th>Date Requested</Th>
+                    <Th>Days</Th>
+                    <Th>Start Date</Th>
+                    <Th>Start Hour</Th>
+                    <Th>End Date</Th>
+                    <Th>End Hour</Th>
+                    <Th>Budget</Th>
+                    <Th>Action</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rejectedBeMidiaCampaigns.length > 0 ? (
+                    rejectedBeMidiaCampaigns.map((campaign: RejectedBeMidiaCampaign) => (
+                      <tr
+                        key={campaign.id}
+                        className="border-b border-gray-200 hover:bg-gray-50">
+                        <Td>{campaign.name}</Td>
+                        <Td>{campaign.advertiser}</Td>
+                        <Td>{`${new Date(
+                          Number(campaign.dateRequested)
+                        ).toLocaleDateString("en-GB")}`}</Td>
+                        <Td>{campaign.days}</Td>
+                        <Td>{`${new Date(
+                          Number(campaign.startDate)
+                        ).toLocaleDateString("en-GB")}`}</Td>
+                        <Td>{campaign.startHour}</Td>
+                        <Td>{`${new Date(
+                          Number(campaign.endDate)
+                        ).toLocaleDateString("en-GB")}`}</Td>
+                        <Td>{campaign.endHour}</Td>
+                        <Td>${campaign.budget}</Td>
+                        <Td>
+                          <Button
+                            text="View"
+                            onClick={() => handleViewCampaign(campaign, "bemidia")}
+                            className="bg-blue-500 text-white rounded px-4 py-2"
+                          />
+                        </Td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="border-b border-gray-200 hover:bg-gray-50">
+                      <Td colSpan={10} align="center">
+                        No rejected BeMidia campaigns found.
+                      </Td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </section>
 
@@ -252,7 +339,7 @@ const AdminRejectedCampaigns = () => {
                   />
                 </div>
               </>
-            ) : (
+            ) : campaignType === "roulette" ? (
               <>
                 <p>
                   <strong>Main Prize:</strong> {(selectedCampaign as RejectedRouletteCampaign).mainPrize}
@@ -278,6 +365,21 @@ const AdminRejectedCampaigns = () => {
                     {(selectedCampaign as RejectedRouletteCampaign).amount3 && ` ($${(selectedCampaign as RejectedRouletteCampaign).amount3})`}
                   </p>
                 )}
+              </>
+            ) : (
+              <>
+                <p>
+                  <strong>Start Hour:</strong> {(selectedCampaign as RejectedBeMidiaCampaign).startHour}
+                </p>
+                <p>
+                  <strong>End Date:</strong>{" "}
+                  {`${new Date(
+                    Number((selectedCampaign as RejectedBeMidiaCampaign).endDate)
+                  ).toLocaleDateString("en-GB")}`}
+                </p>
+                <p>
+                  <strong>End Hour:</strong> {(selectedCampaign as RejectedBeMidiaCampaign).endHour}
+                </p>
               </>
             )}
 

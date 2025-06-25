@@ -27,3 +27,17 @@ export type AdsCampaign = {
   status: string;
   rejectionReason: string;
 };
+
+export type BeMidiaCampaign = {
+  id: number;
+  name: string;
+  adImage: string;
+  action: string;
+  startDate: string;
+  startHour: string;
+  endDate: string;
+  endHour: string;
+  budget: string;
+  status: string;
+  rejectionReason: string;
+};

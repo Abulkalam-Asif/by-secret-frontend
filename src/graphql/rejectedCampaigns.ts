@@ -39,3 +39,23 @@ export const GET_REJECTED_ROULETTE_CAMPAIGNS = gql`
     }
   }
 `;
+
+export const GET_REJECTED_BEMIDIA_CAMPAIGNS = gql`
+  query GetRejectedBeMidiaCampaigns {
+    getRejectedBeMidiaCampaigns {
+      id
+      name
+      advertiser
+      dateRequested
+      days
+      startDate
+      startHour
+      endDate
+      endHour
+      budget
+      media
+      action
+      rejectionReason
+    }
+  }
+`;

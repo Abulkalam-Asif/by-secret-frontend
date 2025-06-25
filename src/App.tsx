@@ -20,6 +20,7 @@ import AdvertiserLogin from "./routes/advertiser/AdvertiserLogin";
 import AdminRejectedCampaigns from "./routes/admin/AdminRejectedCampaigns";
 import AdvAdsCampaigns from "./routes/advertiser/AdvAdsCampaigns";
 import AdvRouletteCampaigns from "./routes/advertiser/AdvRouletteCampaigns";
+import AdvBeMidiaCampaigns from "./routes/advertiser/AdvBeMidiaCampaigns";
 import AdvSettings from "./routes/advertiser/AdvSettings";
 import AdminInvoices from "./routes/admin/AdminInvoices";
 import AdvertiserInvoices from "./routes/advertiser/AdvertiserInvoices";
@@ -63,6 +64,7 @@ function App() {
           <Route index element={<AdvertiserDashboard />} />
           <Route path="ads-campaigns" element={<AdvAdsCampaigns />} />
           <Route path="roulette-campaigns" element={<AdvRouletteCampaigns />} />
+          <Route path="bemidia-campaigns" element={<AdvBeMidiaCampaigns />} />
           <Route path="settings" element={<AdvSettings />} />
           <Route path="invoices" element={<AdvertiserInvoices />} />
         </Route>

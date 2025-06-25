@@ -46,6 +46,11 @@ const AdvertiserSidebar = ({
       icon: <GiPokerHand size={16} />,
     },
     {
+      name: "BeMidia",
+      href: "/advertiser/bemidia-campaigns",
+      icon: <RiAdvertisementLine size={16} />,
+    },
+    {
       name: "My Settings",
       href: "/advertiser/settings",
       icon: <FiSettings size={16} />,
